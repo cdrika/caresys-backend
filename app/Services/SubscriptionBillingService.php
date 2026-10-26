@@ -23,6 +23,7 @@ class SubscriptionBillingService
             $active=(int)$this->w->table('employments')->select('COUNT(DISTINCT person_id) AS total',false)->where('state','active')->get()->getRow()->total;
             if($selection['worker_count']<$active)throw new DomainError('Choose a worker count covering at least your '.$active.' active workers.');
             $snapshot=SubscriptionPricing::calculate($selection);
+            $snapshot['module_details']=array_map(static fn($key)=>['key'=>$key,'label'=>SubscriptionQuote::MODULES[$key],'description'=>SubscriptionQuote::DESCRIPTIONS[$key]],$snapshot['effective_modules']);
             $snapshot['agency']=['ref'=>$this->w->agency['ref'],'name'=>$this->w->agency['name'],'country'=>$this->w->agency['country']];
             $snapshot['issued_at']=gmdate('Y-m-d H:i:s');
             $snapshot['valid_until']=gmdate('Y-m-d',time()+30*86400);

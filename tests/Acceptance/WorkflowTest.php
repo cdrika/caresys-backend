@@ -14,6 +14,9 @@ final class WorkflowTest extends CIUnitTestCase
         $billing=new \App\Services\SubscriptionBillingService($owner);
         $invoice=$billing->issue($input);
         $this->assertSame(6900,(int)$invoice['total_cents']);
+        $snapshot=json_decode($invoice['snapshot'],true);
+        $this->assertSame(['people','scheduling','care'],array_column($snapshot['module_details'],'key'));
+        $this->assertSame(\App\Libraries\SubscriptionQuote::DESCRIPTIONS['scheduling'],$snapshot['module_details'][1]['description']);
         $this->assertSame($invoice['ref'],$billing->issue($input)['ref']);
         $this->blocked(fn()=>$billing->issue(array_replace($input,['worker_count'=>20])),409);
         $this->blocked(fn()=>(new \App\Services\SubscriptionBillingService($this->actor('owner2','harbor')))->get($invoice['ref']),404);
