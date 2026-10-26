@@ -7,7 +7,7 @@ final class SubscriptionQuoteTest extends CIUnitTestCase
 {
     public function testSelectedOptionsAreNormalized(): void
     {
-        $this->assertSame(['modules'=>['people','scheduling'],'service_level'=>'operations'],SubscriptionQuote::selection(['modules'=>['scheduling','people','people'],'service_level'=>'operations']));
+        $this->assertSame(['modules'=>['people','scheduling'],'service_level'=>'operations','worker_count'=>10],SubscriptionQuote::selection(['modules'=>['scheduling','people','people'],'service_level'=>'operations']));
     }
 
     public function testUnlistedAndFreeTextOptionsAreRejected(): void

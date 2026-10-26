@@ -10,9 +10,16 @@ final class WorkflowTest extends CIUnitTestCase
     {
         $owner=$this->actor('owner','willow');
         $before=$owner->db->table('cs_agencies')->where('id',$owner->agency['id'])->get()->getRowArray();
-        (new \App\Services\AdministrationService($owner))->subscriptionRequest(['modules'=>['people','scheduling'],'service_level'=>'operations']);
+        $input=['modules'=>['people','scheduling'],'service_level'=>'operations','request_key'=>bin2hex(random_bytes(16))];
+        $billing=new \App\Services\SubscriptionBillingService($owner);
+        $invoice=$billing->issue($input);
+        $this->assertSame(6900,(int)$invoice['total_cents']);
+        $this->assertSame($invoice['ref'],$billing->issue($input)['ref']);
+        $this->blocked(fn()=>$billing->issue(array_replace($input,['worker_count'=>20])),409);
+        $this->blocked(fn()=>(new \App\Services\SubscriptionBillingService($this->actor('owner2','harbor')))->get($invoice['ref']),404);
+        $this->blocked(fn()=>(new \App\Services\SubscriptionBillingService($this->actor('caregiver','willow')))->get($invoice['ref']),403);
         $audit=$owner->db->table('cs_audit')->where(['agency_id'=>$owner->agency['id'],'action'=>'subscription.change_requested'])->orderBy('id','DESC')->get()->getRowArray();
-        $this->assertSame(['modules'=>['people','scheduling'],'service_level'=>'operations'],json_decode($audit['detail'],true));
+        $this->assertSame(['modules'=>['people','scheduling'],'service_level'=>'operations','worker_count'=>10],json_decode($audit['detail'],true));
         $after=$owner->db->table('cs_agencies')->where('id',$owner->agency['id'])->get()->getRowArray();
         $this->assertSame($before['modules'],$after['modules']);
         $this->assertSame($before['subscription'],$after['subscription']);

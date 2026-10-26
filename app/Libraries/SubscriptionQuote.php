@@ -48,6 +48,8 @@ final class SubscriptionQuote
         }
         $level=$data['service_level']??null;
         if (!is_string($level) || !array_key_exists($level,self::SERVICE_LEVELS)) throw new DomainError('Choose a preferred package or select help me choose.');
-        return ['modules'=>array_values(array_intersect(array_keys(self::MODULES),$modules)),'service_level'=>$level];
+        $workers=$data['worker_count']??10;
+        if((!is_int($workers)&&!is_string($workers)) || !preg_match('/^[0-9]{1,4}$/D',(string)$workers) || (int)$workers<1 || (int)$workers>1000)throw new DomainError('Choose a worker count between 1 and 1,000.');
+        return ['modules'=>array_values(array_intersect(array_keys(self::MODULES),$modules)),'service_level'=>$level,'worker_count'=>(int)$workers];
     }
 }

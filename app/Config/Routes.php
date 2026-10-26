@@ -12,6 +12,7 @@ $routes->group('', ['filter'=>'session'], static function($routes) {
     $routes->post('actions/(:segment)','WorkspaceController::personalAction/$1');
     $routes->get('agency/(:segment)/history/(:segment)','WorkspaceController::history/$1/$2');
     $routes->get('agency/(:segment)/payroll/(:segment)/download','WorkspaceController::payrollDownload/$1/$2');
+    $routes->get('agency/(:segment)/subscription-invoices/(:segment)/download','SubscriptionInvoiceController::download/$1/$2');
     $routes->get('agency/(:segment)/(:segment)','WorkspaceController::agency/$1/$2');
     $routes->post('agency/(:segment)/actions/(:segment)','WorkspaceController::agencyAction/$1/$2');
     $routes->get('api/v1/me/profile','ApiController::profile');

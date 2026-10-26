@@ -60,6 +60,11 @@ class WorkspaceController extends BaseController
 
     private function agencyData(Workspace $w,string $page,array &$d): void
     {
+        if($page==='settings'){
+            $w->require('settings');
+            $d['subscription_invoices']=$w->table('subscription_invoices')->orderBy('id','DESC')->limit(50)->get()->getResultArray();
+            $d['active_worker_count']=(int)$w->table('employments')->select('COUNT(DISTINCT person_id) AS total',false)->where('state','active')->get()->getRow()->total;
+        }
         $map=['recruitment'=>'recruitment','applications'=>'recruitment','history'=>'history','contracts'=>'employment','people'=>'people','clients'=>'care','schedule'=>'scheduling','time'=>'time','leave'=>'leave','care'=>'care','assets'=>'assets','expenses'=>'expenses','payroll'=>'payroll','finance'=>'finance','reports'=>'reporting','settings'=>'settings','today'=>'self'];
         if($page!=='dashboard') {if(!isset($map[$page])) throw new DomainError('Page unavailable.',404);$w->require($map[$page]);}
         $canPeople=array_intersect(Workspace::ROLES[$w->membership['role']]??[],['people','scheduling','time','leave','care','assets','payroll','finance']);
@@ -134,7 +139,7 @@ class WorkspaceController extends BaseController
                 'employee_mapping'=>['ref','version','provider_ref'],'payroll'=>['period_start','period_end'],
                 'invoice'=>['client_ref','hourly_rate','invoice_no','due_date','confirm'],'receipt'=>['ref','version','amount','evidence'],
                 'agency'=>['name','country','currency','timezone'],'member'=>['email','role'],'verify_agency'=>['ref','version','verification','basis'],
-                'dispute_resolution'=>['ref','version','state','resolution'],'subscription_request'=>['modules','service_level'],
+                'dispute_resolution'=>['ref','version','state','resolution'],'subscription_request'=>['modules','service_level','worker_count','request_key'],
                 'qualification'=>['name','issuer','issued_on','expires_on','evidence_ref'],'accept_qualification'=>['employment_ref','qualification_ref','evidence'],
                 'balance'=>['employment_ref','minutes','reason'],'correction'=>['ref','proposed_seconds','reason'],'correction_decision'=>['ref','version','decision'],'acknowledge'=>['ref','version'],'credit'=>['ref','version','reason'],
                 'entitlement'=>['ref','version','modules','valid_until','state','basis'],
@@ -157,8 +162,8 @@ class WorkspaceController extends BaseController
             $methodMap['accept_qualification']='acceptQualification';$methodMap['correction_decision']='correctionDecision';
             $method=$methodMap[$action]??$action;$service->$method($d);
             if($action==='subscription_request')return redirect()->to($this->returnPath($agencyRef,$d))
-                ->with('safe_input',['return_page'=>'settings','modules'=>$d['modules'],'service_level'=>$d['service_level']])
-                ->with('message','Subscription quote requested. Your module access is unchanged.');
+                ->with('safe_input',['return_page'=>'settings','modules'=>$d['modules'],'service_level'=>$d['service_level'],'worker_count'=>$d['worker_count']??10])
+                ->with('message','Subscription invoice issued. Download it below. Your module access is unchanged.');
             return redirect()->to($this->returnPath($agencyRef,$d))->with('message','Saved. The current record state is shown below.');
         }catch(DomainError $e){
             $safe=array_diff_key($this->request->getPost(),array_flip(['password','csrf_test_name','workspace_nonce']));

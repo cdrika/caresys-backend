@@ -56,14 +56,9 @@ class AdministrationService
         });
     }
 
-    public function subscriptionRequest(array $d): void
+    public function subscriptionRequest(array $d): array
     {
-        $this->w->transaction(function()use($d){
-            $this->w->require('settings');
-            $selection=\App\Libraries\SubscriptionQuote::selection($d);
-            $this->w->audit('subscription.change_requested',$this->w->agency['ref'],null,json_encode($selection,JSON_THROW_ON_ERROR));
-            $this->w->notify('subscription.quote_pending',$this->w->agency['ref']);
-        });
+        return (new SubscriptionBillingService($this->w))->issue($d);
     }
 
     public function entitlement(array $d):void
