@@ -72,7 +72,7 @@
   all(document,'form input:not([type=hidden]),form select,form textarea').forEach(control=>{
     if(control.closest('[data-choice],[data-tag-picker],[data-location-picker],[data-duration]'))return;
     const label=control.id?document.querySelector(`label[for="${CSS.escape(control.id)}"]`):control.closest('label');
-    if(!label||label.closest('.field')?.querySelector('.field-help')||label.closest('.consent-field')?.querySelector('.field-help')||label.querySelector('.field-help'))return;
+    if(!label||control.closest('[data-inline-help]')||label.closest('.field')?.querySelector('.field-help')||label.closest('.consent-field')?.querySelector('.field-help')||label.querySelector('.field-help'))return;
     const key=(control.name||'').replace(/\[\]$/,'');const title=label.textContent.trim();const help=manifest[key]||{text:'Choose or enter the information described by this field for the current record.',example:'Use a clear, factual value relevant to '+title.toLocaleLowerCase()+'.'};
     const button=document.createElement('button');button.type='button';button.className='field-help';button.textContent='?';button.setAttribute('aria-label','Help with '+title);button.setAttribute('aria-haspopup','dialog');button.dataset.helpTitle=title;button.dataset.helpText=help.text;button.dataset.helpExample=help.example;label.append(' ',button);
   });

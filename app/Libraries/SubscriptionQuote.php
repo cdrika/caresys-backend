@@ -14,6 +14,22 @@ final class SubscriptionQuote
         'payroll'=>'Payroll preparation & exports', 'finance'=>'Invoices & receipts', 'reporting'=>'Reporting',
     ];
 
+    public const DESCRIPTIONS = [
+        'recruitment'=>'Find candidates, publish vacancies, review applications and send invitations.',
+        'history'=>'Request selected career history with the caregiver’s consent, expiry and withdrawal controls.',
+        'employment'=>'Prepare and review offer versions, record joining decisions and manage employment activation.',
+        'people'=>'Manage agency team records, employment relationships and administrative roles.',
+        'scheduling'=>'Plan client visits and assign caregivers with overlap, leave and qualification checks.',
+        'time'=>'Record online clock events and breaks, review worked time and handle correction requests.',
+        'leave'=>'Submit and review leave requests and maintain leave balances.',
+        'care'=>'Keep visit-related care notes, incident records and acknowledgements in the agency workspace.',
+        'assets'=>'Register equipment and track who has it, returns and custody history.',
+        'expenses'=>'Submit and review expenses and record reimbursement evidence.',
+        'payroll'=>'Prepare approved worked-time export snapshots for payroll; external payroll submission is not included.',
+        'finance'=>'Maintain invoices, receipt records and reviewed credits for agency billing.',
+        'reporting'=>'Review available agency summaries and reports within your role and module permissions.',
+    ];
+
     public const SERVICE_LEVELS = [
         'starter'=>'Starter — recruitment & administration',
         'operations'=>'Operations — day-to-day agency workflows',
