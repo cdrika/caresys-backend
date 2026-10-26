@@ -6,6 +6,19 @@ use CodeIgniter\Test\CIUnitTestCase;
 
 final class WorkflowTest extends CIUnitTestCase
 {
+    public function testQuoteSelectionsAreRecordedWithoutChangingAgencyAccess(): void
+    {
+        $owner=$this->actor('owner','willow');
+        $before=$owner->db->table('cs_agencies')->where('id',$owner->agency['id'])->get()->getRowArray();
+        (new \App\Services\AdministrationService($owner))->subscriptionRequest(['modules'=>['people','scheduling'],'service_level'=>'operations']);
+        $audit=$owner->db->table('cs_audit')->where(['agency_id'=>$owner->agency['id'],'action'=>'subscription.change_requested'])->orderBy('id','DESC')->get()->getRowArray();
+        $this->assertSame(['modules'=>['people','scheduling'],'service_level'=>'operations'],json_decode($audit['detail'],true));
+        $after=$owner->db->table('cs_agencies')->where('id',$owner->agency['id'])->get()->getRowArray();
+        $this->assertSame($before['modules'],$after['modules']);
+        $this->assertSame($before['subscription'],$after['subscription']);
+        $this->blocked(fn()=>(new \App\Services\AdministrationService($this->actor('caregiver','willow')))->subscriptionRequest(['modules'=>['people'],'service_level'=>'custom']),403);
+    }
+
     private $database;
 
     public static function setUpBeforeClass(): void

@@ -9,3 +9,10 @@ document.querySelector('[data-workspace]')?.addEventListener('change',event=>{if
 document.querySelector('[data-demo-account]')?.addEventListener('change',event=>{
   const email=document.querySelector('[name="email"]');if(email)email.value=event.target.value;
 });
+
+document.querySelectorAll('form[data-form-action="subscription_request"]').forEach(form=>{
+  const boxes=[...form.querySelectorAll('input[name="modules[]"]')];
+  const sync=()=>boxes[0]?.setCustomValidity(boxes.some(box=>box.checked)?'':'Select at least one module.');
+  boxes.forEach(box=>box.addEventListener('change',sync));
+  sync();
+});

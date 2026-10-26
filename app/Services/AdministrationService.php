@@ -58,7 +58,12 @@ class AdministrationService
 
     public function subscriptionRequest(array $d): void
     {
-        $this->w->require('settings');$selection=Workspace::text($d,'modules',500);$this->w->audit('subscription.change_requested',$this->w->agency['ref'],null,$selection);$this->w->notify('subscription.quote_pending',$this->w->agency['ref']);
+        $this->w->transaction(function()use($d){
+            $this->w->require('settings');
+            $selection=\App\Libraries\SubscriptionQuote::selection($d);
+            $this->w->audit('subscription.change_requested',$this->w->agency['ref'],null,json_encode($selection,JSON_THROW_ON_ERROR));
+            $this->w->notify('subscription.quote_pending',$this->w->agency['ref']);
+        });
     }
 
     public function entitlement(array $d):void
