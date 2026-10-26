@@ -1,4 +1,10 @@
-# CareSys Agent
+# CareSys Backend
+
+Backend repository: [cdrika/caresys-backend](https://github.com/cdrika/caresys-backend). Mobile client repository: [cdrika/caresys-mobile](https://github.com/cdrika/caresys-mobile).
+
+This repository contains the CodeIgniter web application, isolated mobile web services, shared domain rules, database migrations, and deployment configuration. Native mobile app source belongs in the mobile repository.
+
+The local HTTPS web application is at `https://localhost:8444/app`, with device approval at `/mobile-enrollment`. The isolated API runs at `https://127.0.0.1:8443/mobile/v1`. See [mobile API integration](docs/mobile-api.md), [local service deployment](deploy/local/README.md), and [optional container deployment](deploy/container/README.md). Local TLS uses a generated development certificate. Never commit local environments, certificates, credentials or runtime data.
 
 Local CodeIgniter 4 and MySQL application. Start at [the login page](http://localhost:8080/login).
 

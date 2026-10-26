@@ -26,13 +26,15 @@ class Filters extends BaseFilters
      */
     public array $aliases = [
         'csrf'          => CSRF::class,
+        'mobileAuth' => \App\Filters\MobileAuth::class,
+        'mobilePairing' => \App\Filters\MobilePairingTransport::class,
         'toolbar'       => DebugToolbar::class,
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
         'cors'          => Cors::class,
         'forcehttps'    => ForceHTTPS::class,
-        'pagecache'     => PageCache::class,
+        'pagecache'     => \App\Filters\PrivateApiPageCache::class,
         'performance'   => PerformanceMetrics::class,
     ];
 
@@ -72,7 +74,7 @@ class Filters extends BaseFilters
     public array $globals = [
         'before' => [
             // 'honeypot',
-            'csrf',
+            'csrf' => ['except' => ['mobile/v1/*']],
             // 'invalidchars',
         ],
         'after' => [

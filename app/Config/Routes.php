@@ -36,3 +36,33 @@ $routes->group('', ['filter'=>'session'], static function($routes) {
 
 service('auth')->routes($routes, ['except'=>['logout']]);
 $routes->post('logout','\CodeIgniter\Shield\Controllers\LoginController::logoutAction',['filter'=>'session']);
+
+$routes->post('mobile/v1/pairing/requests','MobilePairingController::start',['filter'=>'mobilePairing']);
+$routes->post('mobile/v1/pairing/token','MobilePairingController::token',['filter'=>'mobilePairing']);
+$routes->get('mobile/v1/pairing/test-device','MobilePairingController::testDevice');
+$routes->group('mobile/v1', ['filter'=>'mobileAuth'], static function($routes) {
+    $routes->get('me/profile','MobileController::profile');
+    $routes->patch('me/profile','MobileController::updateProfile');
+    $routes->post('me/profile/publish','MobileController::publish');
+    $routes->get('agencies/(:segment)/candidates','MobileController::candidates/$1');
+    $routes->post('agencies/(:segment)/history-requests','MobileController::requestHistory/$1');
+    $routes->get('agencies/(:segment)/history-requests/(:segment)/entries','MobileController::readHistory/$1/$2');
+    $routes->post('me/history-requests/(:segment)/decision','MobileController::decideHistory/$1');
+    $routes->post('me/contracts/(:segment)/accept','MobileController::acceptPersonalContract/$1');
+    $routes->post('agencies/(:segment)/contracts/(:segment)/accept','MobileController::acceptAgencyContract/$1/$2');
+    $routes->post('me/joining-requests/(:segment)/decision','MobileController::decideJoining/$1');
+    $routes->post('agencies/(:segment)/joining/(:segment)/activate','MobileController::activate/$1/$2');
+    foreach(['visits','clients','clock-events','leave-requests','assets','expenses','notes','payroll-exports','invoices'] as $operation)$routes->post('agencies/(:segment)/'.$operation,'MobileController::operation/$1/'.$operation);
+    $routes->post('agencies/(:segment)/timesheets/(:segment)/approve','MobileController::operation/$1/time-approval/$2');
+    $routes->post('agencies/(:segment)/leave-requests/(:segment)/decision','MobileController::operation/$1/leave-decision/$2');
+    $routes->post('agencies/(:segment)/assets/(:segment)/custody','MobileController::operation/$1/asset-custody/$2');
+    $routes->post('agencies/(:segment)/expenses/(:segment)/decision','MobileController::operation/$1/expense-decision/$2');
+    $routes->post('agencies/(:segment)/invoices/(:segment)/receipt','MobileController::operation/$1/receipt/$2');
+    $routes->post('agencies/(:segment)/invoices/(:segment)/credit','MobileController::operation/$1/credit/$2');
+    $routes->delete('auth/token','MobileController::logout');
+});
+$routes->post('mobile-enrollment/tokens','MobileEnrollmentController::create',['filter'=>'session']);
+$routes->get('mobile-enrollment','MobileEnrollmentController::index',['filter'=>'session']);
+$routes->post('mobile-enrollment/review','MobileEnrollmentController::review',['filter'=>'session']);
+$routes->post('mobile-enrollment/approve','MobileEnrollmentController::approve',['filter'=>'session']);
+$routes->post('mobile-enrollment/revoke','MobileEnrollmentController::revoke',['filter'=>'session']);

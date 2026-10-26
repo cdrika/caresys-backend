@@ -3,6 +3,25 @@
 use CodeIgniter\Boot;
 use Config\Paths;
 
+require_once __DIR__ . '/../app/Deployment/SurfaceGate.php';
+$surface=(string)(getenv('CARESYS_SURFACE') ?: ($_SERVER['CARESYS_SURFACE'] ?? 'web'));
+$requestPath=parse_url($_SERVER['REQUEST_URI'] ?? '/',PHP_URL_PATH);
+if (!is_string($requestPath) || !\App\Deployment\SurfaceGate::allows($surface,$requestPath)) {
+    http_response_code(404);
+    header('Content-Type: application/json');
+    header('Cache-Control: no-store');
+    echo '{"error":{"code":"NOT_FOUND"}}';
+    exit;
+}
+// Per-process URLs override the shared development environment, without changing the main site.
+if ($deploymentUrl=getenv('CARESYS_BASE_URL')) {
+    $_ENV['app.baseURL']=$_SERVER['app.baseURL']=$deploymentUrl;
+    putenv('app.baseURL='.$deploymentUrl);
+    $_ENV['app.indexPage']=$_SERVER['app.indexPage']='';
+    putenv('app.indexPage=');
+}
+if ($surface==='api') defined('CI_DEBUG') || define('CI_DEBUG',false);
+
 /*
  *---------------------------------------------------------------
  * CHECK PHP VERSION
@@ -52,6 +71,8 @@ require FCPATH . '../app/Config/Paths.php';
 // ^^^ Change this line if you move your application folder
 
 $paths = new Paths();
+if ($deploymentEnv=getenv('CARESYS_ENV_DIR')) $paths->envDirectory=$deploymentEnv;
+if ($deploymentWrite=getenv('CARESYS_WRITABLE')) $paths->writableDirectory=$deploymentWrite;
 
 // LOAD THE FRAMEWORK BOOTSTRAP FILE
 require $paths->systemDirectory . '/Boot.php';

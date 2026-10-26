@@ -131,7 +131,12 @@ _modules/*
 /.env.*
 !/.env.example
 /auth.json
+/deploy/local/runtime/
+/deploy/container/.env
+/deploy/container/api.env
+/deploy/container/web.env
 /node_modules/
+/mobile-app/
 /.phpunit.result.cache
 ~$*
 *.log

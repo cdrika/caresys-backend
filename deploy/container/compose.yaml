@@ -1,0 +1,66 @@
+services:
+  edge:
+    image: caddy:2
+    ports:
+      - "127.0.0.1:9443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      api_net:
+        ipv4_address: 172.30.241.2
+      web_net:
+        ipv4_address: 172.30.242.2
+    depends_on: [api, web]
+    restart: unless-stopped
+  api:
+    build:
+      context: ../..
+      dockerfile: deploy/container/Dockerfile
+    env_file: api.env
+    environment:
+      CARESYS_SURFACE: api
+      CARESYS_BASE_URL: https://api.localhost:9443/
+      CARESYS_WEB_URL: https://localhost:9443
+      CARESYS_TRUSTED_PROXY: 172.30.241.2
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    networks: [api_net]
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/apache2
+      - /var/lock/apache2
+      - /var/www/html/writable:uid=33,gid=33,mode=0700
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+  web:
+    build:
+      context: ../..
+      dockerfile: deploy/container/Dockerfile
+    env_file: web.env
+    environment:
+      CARESYS_SURFACE: web
+      CARESYS_BASE_URL: https://localhost:9443/
+      CARESYS_WEB_URL: https://localhost:9443
+      CARESYS_TRUSTED_PROXY: 172.30.242.2
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    networks: [web_net]
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/apache2
+      - /var/lock/apache2
+      - /var/www/html/writable:uid=33,gid=33,mode=0700
+    security_opt: ["no-new-privileges:true"]
+    restart: unless-stopped
+networks:
+  api_net:
+    ipam:
+      config: [{subnet: 172.30.241.0/24}]
+  web_net:
+    ipam:
+      config: [{subnet: 172.30.242.0/24}]
+volumes:
+  caddy_data:
+  caddy_config:

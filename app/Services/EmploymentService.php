@@ -8,8 +8,8 @@ class EmploymentService
     public function stepUp(array $d): void
     {
         $user=model(\CodeIgniter\Shield\Models\UserModel::class)->findById($this->w->userId);
-        $result=auth()->check(['email'=>$user->email,'password'=>Workspace::text($d,'password',255)]);
-        if(!$result->isOK()) throw new DomainError('Password confirmation failed.',403);
+        $verified=service('passwords')->verify(Workspace::text($d,'password',255),$user->password_hash);
+        if(!$verified) throw new DomainError('Password confirmation failed.',403);
     }
 
     public function issue(array $d): array

@@ -6,6 +6,16 @@ use CodeIgniter\Config\BaseConfig;
 
 class App extends BaseConfig
 {
+    public function __construct()
+    {
+        parent::__construct();
+        // Containers trust their one dedicated edge address, never arbitrary forwarded headers.
+        if ($proxy=getenv('CARESYS_TRUSTED_PROXY')) {
+            if (!filter_var($proxy,FILTER_VALIDATE_IP)) throw new \RuntimeException('Invalid trusted proxy address.');
+            $this->proxyIPs=[$proxy=>'X-Forwarded-For'];
+        }
+    }
+
     /**
      * --------------------------------------------------------------------------
      * Base Site URL

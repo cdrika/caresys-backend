@@ -5,13 +5,20 @@ use App\Services\{Workspace,DomainError,RecruitmentService,EmploymentService,Ope
 
 class ApiController extends BaseController
 {
+    protected function actorId(): int { return (int)auth()->id(); }
+
+    protected function checkWriteWorkspace(?string $agency): void
+    {
+        if(session('workspace_scope')!==($agency??'personal') || !hash_equals((string)session('workspace_nonce'),$this->request->getHeaderLine('X-Workspace-Nonce')))throw new DomainError('WORKSPACE_CHANGED: refresh the intended workspace.',409);
+    }
+
     private function runAction(?string $agency,callable $work)
     {
         $correlation=bin2hex(random_bytes(8));
         try {
-            $w=new Workspace((int)auth()->id(),$agency);
+            $w=new Workspace($this->actorId(),$agency);
             if(strtoupper($this->request->getMethod())!=='GET') {
-                if(session('workspace_scope')!==($agency??'personal') || !hash_equals((string)session('workspace_nonce'),$this->request->getHeaderLine('X-Workspace-Nonce')))throw new DomainError('WORKSPACE_CHANGED: refresh the intended workspace.',409);
+                $this->checkWriteWorkspace($agency);
             }
             return $this->response->setHeader('Cache-Control','no-store, private')->setJSON(['data'=>$this->present($work($w)),'correlation_id'=>$correlation]);
         }catch(DomainError $e){return $this->response->setStatusCode($e->status)->setHeader('Cache-Control','no-store')->setJSON(['error'=>['code'=>'CARESYS_'.$e->status,'message'=>$e->getMessage(),'correlation_id'=>$correlation]]);}

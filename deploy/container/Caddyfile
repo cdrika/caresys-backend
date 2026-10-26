@@ -1,0 +1,27 @@
+https://api.localhost {
+    tls internal
+    header Cache-Control "no-store"
+    @mobile path /mobile/v1/*
+    handle @mobile {
+        reverse_proxy api:80 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto https
+        }
+    }
+    handle {
+        respond 404
+    }
+}
+https://localhost {
+    tls internal
+    @mobile path /mobile/v1/*
+    handle @mobile {
+        respond 404
+    }
+    handle {
+        reverse_proxy web:80 {
+            header_up X-Forwarded-For {remote_host}
+            header_up X-Forwarded-Proto https
+        }
+    }
+}
