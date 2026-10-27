@@ -1,0 +1,13 @@
+✔ patched zod remains compatible with Expo developer tool schemas (105.5072ms)
+✔ authenticated API requests omit cookies and keep tokens out of URLs (1.3059ms)
+✔ plain HTTP and expired credentials are rejected (1.0116ms)
+✔ trial locks exactly at deadline, with a generic member notice (0.282ms)
+✔ required dependencies are included once in estimate (0.2167ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 263.381

@@ -1,0 +1,204 @@
+{
+  "started_at": "2026-10-27T21:29:02.239Z",
+  "environment": "Local development; Stripe disabled; provider responses simulated only through CLI injection",
+  "cases": [
+    {
+      "name": "New owner account registered through UI (resumed test)",
+      "result": "PASS",
+      "actual": "trial.owner.1793136192611.c31eb7@example.invalid"
+    },
+    {
+      "name": "New member account registered through UI (resumed test)",
+      "result": "PASS",
+      "actual": "trial.member.1793136192611.c31eb7@example.invalid"
+    },
+    {
+      "name": "New agency is blocked pending a card; Stripe stays disabled",
+      "result": "PASS",
+      "actual": "awaiting_card; secure setup button disabled"
+    },
+    {
+      "name": "Invoice/trial cannot be created before verified card",
+      "result": "PASS",
+      "actual": "Rejected by the server; awaiting_card remains"
+    },
+    {
+      "name": "Module selection starts a 30-day free trial and issues invoice",
+      "result": "PASS",
+      "actual": "USD 69/month: custom platform 29 + scheduling 25 + care dependency 15"
+    },
+    {
+      "name": "Owner can download professional module-description invoice",
+      "result": "PASS",
+      "actual": "application/pdf, HTTP 200"
+    },
+    {
+      "name": "Exact trial expiry boundary and no payment prompt during trial",
+      "result": "PASS",
+      "actual": {
+        "second_before": false,
+        "at_deadline": true,
+        "trial_days": 30
+      }
+    },
+    {
+      "name": "Owner grants new member agency access",
+      "result": "PASS",
+      "actual": "Scheduler role; no billing authority"
+    },
+    {
+      "name": "Mobile bearer API reports active trial",
+      "result": "PASS",
+      "actual": "HTTP 200; state trial"
+    },
+    {
+      "name": "Existing owner session is blocked at trial expiry",
+      "result": "PASS",
+      "actual": "Dashboard redirects to billing; owner payment prompt shown"
+    },
+    {
+      "name": "Fresh owner login after expiry opens billing",
+      "result": "PASS",
+      "actual": "Redirected to agency billing"
+    },
+    {
+      "name": "Existing and fresh member sessions show lock notice only",
+      "result": "PASS",
+      "actual": "Agency locked; owner-contact notice; no billing controls"
+    },
+    {
+      "name": "Mobile API locks agency operations and hides billing from members",
+      "result": "PASS",
+      "actual": "Owner operation 402; member status minimal; member PDF 403"
+    },
+    {
+      "name": "Real Stripe configuration remains disabled",
+      "result": "PASS",
+      "actual": "Browser API stripe_configured=false; no keys changed"
+    },
+    {
+      "name": "SIMULATED failed payment does not unlock access",
+      "result": "PASS",
+      "actual": "409; agency remains locked"
+    },
+    {
+      "name": "SIMULATED wrong payment amount does not unlock access",
+      "result": "PASS",
+      "actual": "409; agency remains locked"
+    },
+    {
+      "name": "SIMULATED successful verification unlocks once for 30 days",
+      "result": "PASS",
+      "actual": "paid; duplicate verification does not extend period"
+    },
+    {
+      "name": "Owner and member access are restored after simulated success",
+      "result": "PASS",
+      "actual": "Both dashboards available"
+    },
+    {
+      "name": "Restore original no-card state after simulation",
+      "result": "PASS",
+      "actual": "awaiting_card; fake checkouts removed; real Stripe remains disabled; accounts and issued test invoice retained"
+    },
+    {
+      "name": "Platform administrator can view the configurable free-day policy",
+      "result": "PASS",
+      "actual": "Current default 30 days; choices 1–365; global setting left unchanged. Isolated backend tests cover policy changes."
+    }
+  ],
+  "screenshots": [
+    {
+      "file": "screenshots/01-new-owner-registration.png",
+      "note": "New owner registration through the actual UI; password fields masked."
+    },
+    {
+      "file": "screenshots/02-agency-registration.png",
+      "note": "New agency registration through the actual application form."
+    },
+    {
+      "file": "screenshots/03-stripe-disabled-card-required.png",
+      "note": "Actual UI: Stripe remains disabled; no card entered and trial cannot start."
+    },
+    {
+      "file": "screenshots/04-simulated-card-verified.png",
+      "note": "SIMULATED card verification through CLI-only fake provider; no Stripe API or real card."
+    },
+    {
+      "file": "screenshots/05-module-selection-estimate.png",
+      "note": "Select people and scheduling; care dependency included; USD 69/month before tax."
+    },
+    {
+      "file": "screenshots/06-free-trial-active.png",
+      "note": "Actual trial gate and invoice after SIMULATED card verification."
+    },
+    {
+      "file": "screenshots/07-member-access-during-trial.png",
+      "note": "New member can access the selected agency during the simulated-card free trial."
+    },
+    {
+      "file": "screenshots/08-owner-expired-payment-prompt.png",
+      "note": "SIMULATED elapsed 30 days. Owner gets payment prompt; real Stripe payment is still disabled."
+    },
+    {
+      "file": "screenshots/09-owner-login-after-expiry.png",
+      "note": "Fresh owner login after simulated expiry opens billing only."
+    },
+    {
+      "file": "screenshots/10-member-login-locked-mobile.png",
+      "note": "Fresh member login: generic locked notice, no card details, invoice or payment controls."
+    },
+    {
+      "file": "screenshots/11-simulated-failed-payment-stays-locked.png",
+      "note": "SIMULATED unpaid provider response rejected; agency remains locked."
+    },
+    {
+      "file": "screenshots/12-simulated-payment-approved.png",
+      "note": "SIMULATED paid state only — no real card payment or Stripe request."
+    },
+    {
+      "file": "screenshots/13-access-restored-after-simulated-payment.png",
+      "note": "Agency dashboard available after simulated successful provider verification."
+    },
+    {
+      "file": "screenshots/14-final-state-stripe-disabled.png",
+      "note": "Final retained test account: awaiting card; Stripe disabled; simulated paid access removed."
+    },
+    {
+      "file": "screenshots/15-invoice-pdf-preview.png",
+      "note": "Captured original invoice: selected modules, care dependency, USD 69/month proposal and 30-day free-trial terms."
+    },
+    {
+      "file": "screenshots/16-platform-trial-policy.png",
+      "note": "Platform administrator policy screen; current global default remains 30 days."
+    }
+  ],
+  "agency": {
+    "name": "Test Trial 1793136411741.dbdadf (SIMULATED)",
+    "ref": "f7069cf5a18925d7ca01987c87bde5bb",
+    "owner_email": "trial.owner.1793136192611.c31eb7@example.invalid",
+    "member_email": "trial.member.1793136192611.c31eb7@example.invalid"
+  },
+  "trial": {
+    "started_at": "2026-10-27 21:29:54",
+    "ends_at": "2026-11-26 21:29:54",
+    "days": 30
+  },
+  "invoice": {
+    "ref": "5b028fe53250d9a522ea49bd3847f22f",
+    "invoice_no": "CSI-20261027-5B028FE53250",
+    "currency": "USD",
+    "total_cents": "6900",
+    "state": "issued",
+    "created_at": "2026-10-27 14:29:54.814996"
+  },
+  "simulated_expiry": {
+    "started_at": "2026-09-27 21:30:01",
+    "ends_at": "2026-10-27 21:30:01",
+    "method": "Moved this test agency clock window into the past, retaining 30 elapsed days. Global policy unchanged."
+  },
+  "simulated_paid_until": "2026-11-26 21:30:50",
+  "final_state": "awaiting_card",
+  "completed_at": "2026-10-27T21:30:55.328Z",
+  "result": "PASS"
+}

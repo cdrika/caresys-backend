@@ -1,0 +1,90 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [5 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R /F2 4 0 R >> >> /Contents 6 0 R >>
+endobj
+6 0 obj
+<< /Length 4062>>
+stream
+0.06 0.43 0.39 rg 0 828 595 14 re f
+BT /F2 25 Tf 0.06 0.43 0.39 rg 42 784 Td (CareSys) Tj ET
+BT /F2 15 Tf 0.12 0.20 0.23 rg 310 790 Td (SUBSCRIPTION INVOICE) Tj ET
+BT /F1 9 Tf 0.35 0.43 0.46 rg 310 771 Td (PRO FORMA / MONTHLY PROPOSAL) Tj ET
+0.82 0.88 0.87 rg 42 749 511 1 re f
+BT /F2 10 Tf 0.12 0.20 0.23 rg 42 728 Td (CSI-20261027-5B028FE53250) Tj ET
+BT /F2 9 Tf 0.35 0.43 0.46 rg 42 700 Td (PREPARED FOR) Tj ET
+BT /F2 14 Tf 0.12 0.20 0.23 rg 42 678 Td (Test Trial 1793136411741.dbdadf \(SIMULATED\)) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 659 Td (Country: US) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 632 Td (Issued: 2026-10-27 21:29:54 UTC    |    Price valid through: 2026-11-26) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 617 Td (Plan: Custom platform    |    Workers covered: 10) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 602 Td (Billing basis: monthly    |    Currency: USD) Tj ET
+0.06 0.43 0.39 rg 42 559 511 28 re f
+BT /F2 9 Tf 1 1 1 rg 52 569 Td (MONTHLY CHARGES) Tj ET
+BT /F2 9 Tf 1 1 1 rg 340 569 Td (QTY) Tj ET
+BT /F2 9 Tf 1 1 1 rg 392 569 Td (UNIT USD) Tj ET
+BT /F2 9 Tf 1 1 1 rg 471 569 Td (AMOUNT USD) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 52 537 Td (Custom platform \(10 workers included\)) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 345 537 Td (1) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 397 537 Td (29.00) Tj ET
+BT /F2 10 Tf 0.12 0.20 0.23 rg 480 537 Td (29.00) Tj ET
+0.88 0.92 0.91 rg 42 515 511 1 re f
+BT /F1 10 Tf 0.12 0.20 0.23 rg 52 507 Td (Scheduling & visits) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 345 507 Td (1) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 397 507 Td (25.00) Tj ET
+BT /F2 10 Tf 0.12 0.20 0.23 rg 480 507 Td (25.00) Tj ET
+0.88 0.92 0.91 rg 42 485 511 1 re f
+BT /F1 10 Tf 0.12 0.20 0.23 rg 52 477 Td (Care notes & incidents) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 345 477 Td (1) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 397 477 Td (15.00) Tj ET
+BT /F2 10 Tf 0.12 0.20 0.23 rg 480 477 Td (15.00) Tj ET
+0.88 0.92 0.91 rg 42 455 511 1 re f
+0.91 0.96 0.94 rg 300 417 253 42 re f
+BT /F2 9 Tf 0.12 0.20 0.23 rg 312 440 Td (MONTHLY SUBTOTAL) Tj ET
+BT /F2 15 Tf 0.06 0.43 0.39 rg 427 425 Td (USD 69.00) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 390 Td (Tax is confirmed at Stripe checkout before you approve payment.) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 376 Td (No payment collected. Payment after the free trial requires explicit owner approval.) Tj ET
+BT /F2 9 Tf 0.12 0.20 0.23 rg 42 362 Td (Free trial: 30 days, ending 2026-11-26 21:29:54 UTC.) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 348 Td (No subscription charge during the trial. Agency access locks at expiry until payment.) Tj ET
+BT /F2 13 Tf 0.12 0.20 0.23 rg 42 322 Td (MODULE SCOPE & DESCRIPTIONS) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 304 Td (Descriptions below explain the modules covered by this proposal.) Tj ET
+BT /F2 11 Tf 0.12 0.20 0.23 rg 42 282 Td (People administration - Selected) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 266 Td (Manage agency team records, employment relationships and administrative roles.) Tj ET
+BT /F2 11 Tf 0.12 0.20 0.23 rg 42 245 Td (Scheduling & visits - Selected) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 229 Td (Plan client visits and assign caregivers with overlap, leave and qualification checks.) Tj ET
+BT /F2 11 Tf 0.12 0.20 0.23 rg 42 208 Td (Care notes & incidents - Required dependency) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 192 Td (Keep visit-related care notes, incident records and acknowledgements in the agency) Tj ET
+BT /F1 10 Tf 0.12 0.20 0.23 rg 42 177 Td (workspace.) Tj ET
+BT /F2 10 Tf 0.12 0.20 0.23 rg 42 148 Td (TERMS & BILLING NOTES) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 133 Td (Prices are valid through the date above. This is a pro forma proposal, not a tax) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 119 Td (invoice.) Tj ET
+BT /F1 9 Tf 0.12 0.20 0.23 rg 42 105 Td (Catalog version: 2026-10-26-v1. Access remains subject to the agreed subscription.) Tj ET
+0.82 0.88 0.87 rg 42 59 511 1 re f
+BT /F1 8 Tf 0.35 0.43 0.46 rg 42 41 Td (CareSys | CSI-20261027-5B028FE53250) Tj ET
+BT /F1 8 Tf 0.12 0.20 0.23 rg 490 41 Td (Page 1 of 1) Tj ET
+endstream
+endobj
+xref
+0 7
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000212 00000 n 
+0000000314 00000 n 
+0000000450 00000 n 
+trailer
+<< /Size 7 /Root 1 0 R >>
+startxref
+4562
+%%EOF
