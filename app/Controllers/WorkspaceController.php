@@ -24,10 +24,15 @@ class WorkspaceController extends BaseController
             $w=$this->context($agencyRef);$scope=$agencyRef??'personal';
             if(session('workspace_scope')!==$scope) session()->set(['workspace_scope'=>$scope,'workspace_nonce'=>bin2hex(random_bytes(24))]);
             $memberships=$w->db->table('cs_memberships m')->select('a.ref,a.name,m.role')->join('cs_agencies a','a.id=m.agency_id')->where(['m.user_id'=>$w->userId,'m.state'=>'active'])->get()->getResultArray();
+            if(!$agencyRef)foreach($memberships as &$membership){$state=(new \App\Services\AgencyAccessService(new Workspace($w->userId,$membership['ref'],null,true)))->status();$membership['locked']=$state['locked'];}unset($membership);
+            if(!$agencyRef&&$page==='dashboard'&&count($memberships)===1){
+                $access=new \App\Services\AgencyAccessService(new Workspace($w->userId,$memberships[0]['ref'],null,true));
+                if($access->status()['locked'])return redirect()->to('/agency/'.$memberships[0]['ref'].'/billing');
+            }
             $data=['w'=>$w,'page'=>$page,'memberships'=>$memberships,'base'=>$agencyRef?'/agency/'.$agencyRef:'/app','nonce'=>session('workspace_nonce'),'title'=>ucfirst(str_replace('_',' ',$page)),'rows'=>[]];
             if(!$agencyRef) $this->personalData($w,$page,$data);else $this->agencyData($w,$page,$data);
             return $this->response->setHeader('Cache-Control','no-store, private')->setBody(view('caresys/workspace',$data));
-        }catch(DomainError $e){return $this->response->setStatusCode($e->status)->setHeader('Cache-Control','no-store')->setBody(view('caresys/error',['message'=>$e->getMessage(),'status'=>$e->status]));}
+        }catch(DomainError $e){if($e->status===402&&$agencyRef)return redirect()->to('/agency/'.$agencyRef.'/billing');return $this->response->setStatusCode($e->status)->setHeader('Cache-Control','no-store')->setBody(view('caresys/error',['message'=>$e->getMessage(),'status'=>$e->status]));}
     }
 
     private function personalData(Workspace $w,string $page,array &$d): void
@@ -160,7 +165,8 @@ class WorkspaceController extends BaseController
             else $service=new OperationsService($w);
             if(in_array($action,['qualification','accept_qualification','balance','correction','correction_decision','acknowledge','credit'],true))$service=new ReviewService($w);
             $methodMap['accept_qualification']='acceptQualification';$methodMap['correction_decision']='correctionDecision';
-            $method=$methodMap[$action]??$action;$service->$method($d);
+            $method=$methodMap[$action]??$action;$result=$service->$method($d);
+            if($action==='agency')return redirect()->to('/agency/'.$result['ref'].'/billing')->with('message','Agency registered. Set up your card and choose modules to begin your free trial.');
             if($action==='subscription_request')return redirect()->to($this->returnPath($agencyRef,$d))
                 ->with('safe_input',['return_page'=>'settings','modules'=>$d['modules'],'service_level'=>$d['service_level'],'worker_count'=>$d['worker_count']??10])
                 ->with('message','Subscription invoice issued. Download it below. Your module access is unchanged.');

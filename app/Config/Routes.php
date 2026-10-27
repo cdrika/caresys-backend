@@ -5,11 +5,23 @@ use CodeIgniter\Router\RouteCollection;
 /** @var RouteCollection $routes */
 $routes->setAutoRoute(false);
 $routes->get('/', static fn() => redirect()->to('/app'));
+$routes->post('billing/stripe/webhook','StripeWebhookController::receive');
 $routes->group('', ['filter'=>'session'], static function($routes) {
     $routes->get('reference/locations','ReferenceController::locations');
     $routes->get('app','WorkspaceController::personal');
+    $routes->get('app/billing-policy','BillingPolicyController::index');
+    $routes->post('app/billing-policy','BillingPolicyController::save');
     $routes->get('app/(:segment)','WorkspaceController::personal/$1');
     $routes->post('actions/(:segment)','WorkspaceController::personalAction/$1');
+    $routes->get('agency/(:segment)/billing','BillingController::index/$1');
+    $routes->post('agency/(:segment)/billing/actions/(:segment)','BillingController::action/$1/$2');
+    $routes->get('api/v1/me/agencies','BillingApiController::agencies');
+    $routes->get('api/v1/agencies/(:segment)/billing','BillingApiController::status/$1');
+    $routes->get('api/v1/agencies/(:segment)/billing/catalog','BillingApiController::catalog/$1');
+    $routes->post('api/v1/agencies/(:segment)/billing/invoices','BillingApiController::quote/$1');
+    $routes->get('api/v1/agencies/(:segment)/billing/invoices/(:segment)/download','BillingApiController::download/$1/$2');
+    $routes->post('api/v1/agencies/(:segment)/billing/checkout/(:segment)','BillingApiController::checkout/$1/$2');
+    $routes->post('api/v1/agencies/(:segment)/billing/checkouts/(:segment)/complete','BillingApiController::complete/$1/$2');
     $routes->get('agency/(:segment)/history/(:segment)','WorkspaceController::history/$1/$2');
     $routes->get('agency/(:segment)/payroll/(:segment)/download','WorkspaceController::payrollDownload/$1/$2');
     $routes->get('agency/(:segment)/subscription-invoices/(:segment)/download','SubscriptionInvoiceController::download/$1/$2');
@@ -42,6 +54,13 @@ $routes->post('mobile/v1/pairing/requests','MobilePairingController::start',['fi
 $routes->post('mobile/v1/pairing/token','MobilePairingController::token',['filter'=>'mobilePairing']);
 $routes->get('mobile/v1/pairing/test-device','MobilePairingController::testDevice');
 $routes->group('mobile/v1', ['filter'=>'mobileAuth'], static function($routes) {
+    $routes->get('me/agencies','MobileBillingController::agencies');
+    $routes->get('agencies/(:segment)/billing','MobileBillingController::status/$1');
+    $routes->get('agencies/(:segment)/billing/catalog','MobileBillingController::catalog/$1');
+    $routes->post('agencies/(:segment)/billing/invoices','MobileBillingController::quote/$1');
+    $routes->get('agencies/(:segment)/billing/invoices/(:segment)/download','MobileBillingController::download/$1/$2');
+    $routes->post('agencies/(:segment)/billing/checkout/(:segment)','MobileBillingController::checkout/$1/$2');
+    $routes->post('agencies/(:segment)/billing/checkouts/(:segment)/complete','MobileBillingController::complete/$1/$2');
     $routes->get('me/profile','MobileController::profile');
     $routes->patch('me/profile','MobileController::updateProfile');
     $routes->post('me/profile/publish','MobileController::publish');

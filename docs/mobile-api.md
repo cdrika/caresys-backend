@@ -19,6 +19,10 @@ Send `Authorization: Bearer <access_token>` on every mobile request. Do not send
 
 ## Resources
 
+### Agency trials and billing
+
+The mobile API now exposes agency access status, owner-only module invoices, Stripe card setup and explicit payment approval. See [the complete trial/billing contract](../Documentation/Agency_Free_Trial_and_Payments.md#api-contract). On HTTP 402, clear agency content and show billing for owners or a generic locked notice for other members. A saved card never authorizes automatic charging; checkout for payment is blocked until the trial or paid period expires.
+
 Mobile routes mirror the existing `/api/v1` resource suffixes and JSON fields:
 
 - `GET/PATCH /me/profile`, `POST /me/profile/publish`.

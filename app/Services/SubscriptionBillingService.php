@@ -10,7 +10,9 @@ class SubscriptionBillingService
     public function issue(array $data): array
     {
         return $this->w->transaction(function()use($data){
-            $this->w->require('settings');
+            $this->w->requireBilling();
+            $subscription=$this->w->table('agency_subscriptions')->get()->getRowArray();
+            if(($subscription&&!$subscription['card_verified_at'])||(!$subscription&&$this->w->agency['subscription']!=='active'))throw new DomainError('Save a card securely with Stripe before selecting trial modules.',409);
             $selection=SubscriptionQuote::selection($data);
             $key=$data['request_key']??'';
             if(!is_string($key)||!preg_match('/^[a-f0-9]{32}$/D',$key))throw new DomainError('Refresh the invoice form and submit again.');
@@ -29,6 +31,13 @@ class SubscriptionBillingService
             $snapshot['valid_until']=gmdate('Y-m-d',time()+30*86400);
             $ref=bin2hex(random_bytes(16));
             $invoice=$this->w->insert('subscription_invoices',['ref'=>$ref,'agency_id'=>$this->w->agency['id'],'created_by'=>$this->w->userId,'invoice_no'=>'CSI-'.gmdate('Ymd').'-'.strtoupper(substr($ref,0,12)),'request_key'=>$key,'request_hash'=>$hash,'currency'=>'USD','total_cents'=>$snapshot['total_cents'],'snapshot'=>json_encode($snapshot,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR)]);
+            (new AgencyAccessService($this->w))->selectInvoice($invoice);
+            $trial=$this->w->table('agency_subscriptions')->get()->getRowArray();
+            if($trial){
+                $snapshot['trial_terms']=['days'=>(int)$trial['trial_days'],'starts_at'=>$trial['trial_started_at'],'ends_at'=>$trial['trial_ends_at'],'payment_requires_owner_approval'=>true];
+                $invoice['snapshot']=json_encode($snapshot,JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
+                $this->w->table('subscription_invoices')->where('id',$invoice['id'])->update(['snapshot'=>$invoice['snapshot']]);
+            }
             $this->w->audit('subscription.change_requested',$invoice['ref'],null,json_encode($selection,JSON_THROW_ON_ERROR));
             $this->w->audit('subscription.invoice_issued',$invoice['ref'],null,$invoice['invoice_no'].'; USD '.number_format($invoice['total_cents']/100,2,'.','').'; pro forma; access unchanged');
             $this->w->notify('subscription.invoice_issued',$invoice['ref'],$this->w->userId);
@@ -38,7 +47,7 @@ class SubscriptionBillingService
 
     public function get(string $ref): array
     {
-        $this->w->require('settings');
+        $this->w->requireBilling();
         return $this->w->record('subscription_invoices',$ref);
     }
 }

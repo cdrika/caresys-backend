@@ -20,6 +20,7 @@ if (!($environmentLines -match '^\s*mobile\.apiBaseURL\s*=')) {
 }
 $apiLines=@("CI_ENVIRONMENT = development")
 $apiLines+=@($environmentLines | Where-Object { $_ -match '^\s*database\.default\.' })
+$apiLines+=@($environmentLines | Where-Object { $_ -match '^\s*billing\.' })
 $apiLines+=@('session.driver = CodeIgniter\Session\Handlers\FileHandler',"session.savePath = '$runtime/api-writable/session'",'app.indexPage = ')
 Set-Content -LiteralPath "$runtime/api-env/.env" -Value $apiLines -Encoding utf8NoBOM
 if (!(Test-Path -LiteralPath "$runtime/localhost.crt")) {

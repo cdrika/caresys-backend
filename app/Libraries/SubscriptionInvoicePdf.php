@@ -8,6 +8,7 @@ final class SubscriptionInvoicePdf
     private string $content='';
     private int $y=0;
     private string $number='';
+    private bool $paid=false;
 
     public static function render(array $invoice): string
     {
@@ -33,7 +34,7 @@ final class SubscriptionInvoicePdf
         $this->box(0,828,595,14,'0.06 0.43 0.39');
         $this->text('CareSys',42,784,25,true,'0.06 0.43 0.39');
         $this->text('SUBSCRIPTION INVOICE',310,790,15,true);
-        $this->text('PRO FORMA / MONTHLY PROPOSAL',310,771,9,false,'0.35 0.43 0.46');
+        $this->text($this->paid?'PAID / SUBSCRIPTION SUMMARY':'PRO FORMA / MONTHLY PROPOSAL',310,771,9,false,'0.35 0.43 0.46');
         $this->box(42,749,511,1,'0.82 0.88 0.87');
         $this->text($this->number,42,728,10,true);
         $this->y=700;
@@ -55,6 +56,7 @@ final class SubscriptionInvoicePdf
     {
         $s=json_decode($invoice['snapshot'],true,512,JSON_THROW_ON_ERROR);
         $money=static fn(int $c)=>number_format($c/100,2,'.',',');
+        $this->paid=($invoice['state']??'')==='paid';
         $this->number=$invoice['invoice_no'];$this->page();
         $this->text('PREPARED FOR',42,$this->y,9,true,'0.35 0.43 0.46');$this->y-=22;
         $this->paragraph($s['agency']['name'],14,true,56);
@@ -79,9 +81,13 @@ final class SubscriptionInvoicePdf
         $this->box(300,$this->y-18,253,42,'0.91 0.96 0.94');
         $this->text('MONTHLY SUBTOTAL',312,$this->y+5,9,true);
         $this->text('USD '.$money($s['total_cents']),427,$this->y-10,15,true,'0.06 0.43 0.39');
-        $this->y-=45;$this->paragraph('Tax has not been calculated. Final tax and payment terms require confirmation.',9);
-        $this->paragraph('No payment collected. This proposal does not activate modules or recurring charges.',9);
-        $this->y-=20;
+        $this->y-=45;$this->paragraph($this->paid?'Tax and the final charged amount are shown on your Stripe payment receipt.':'Tax is confirmed at Stripe checkout before you approve payment.',9);
+        $this->paragraph($this->paid?'Payment verified by Stripe. Renewal requires another owner-approved payment.':'No payment collected. Payment after the free trial requires explicit owner approval.',9);
+        if(!empty($s['trial_terms']['ends_at'])){
+            $this->paragraph('Free trial: '.$s['trial_terms']['days'].' days, ending '.$s['trial_terms']['ends_at'].' UTC.',9,true);
+            $this->paragraph('No subscription charge during the trial. Agency access locks at expiry until payment.',9);
+        }
+        $this->y-=12;
         $this->ensure(100);$this->paragraph('MODULE SCOPE & DESCRIPTIONS',13,true,65);
         $this->paragraph('Descriptions below explain the modules covered by this proposal.',9);$this->y-=8;
         $details=$s['module_details']??array_map(static fn($key)=>['key'=>$key,'label'=>SubscriptionQuote::MODULES[$key]??$key,'description'=>SubscriptionQuote::DESCRIPTIONS[$key]??''], $s['effective_modules']);
@@ -91,11 +97,11 @@ final class SubscriptionInvoicePdf
             $description=$detail['description'];
             $this->ensure(35+count(explode("\n",wordwrap($description,88,"\n",true)))*15);
             $this->paragraph($detail['label'].' - '.$status,11,true,75);
-            $this->paragraph($description);$this->y-=9;
+            $this->paragraph($description);$this->y-=6;
         }
         $this->ensure(65);$this->y-=8;
-        $this->paragraph('PROPOSAL TERMS',10,true);
-        $this->paragraph('Prices are valid through the date above. This is a pro forma proposal, not a tax invoice.',9);
+        $this->paragraph('TERMS & BILLING NOTES',10,true);
+        $this->paragraph($this->paid?'This subscription summary accompanies your Stripe payment receipt; it is not a tax invoice.':'Prices are valid through the date above. This is a pro forma proposal, not a tax invoice.',9);
         $this->paragraph('Catalog version: '.$s['catalog_version'].'. Access remains subject to the agreed subscription.',9);
         $this->pages[]=$this->content;
         $objects=['<< /Type /Catalog /Pages 2 0 R >>','', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];$kids=[];

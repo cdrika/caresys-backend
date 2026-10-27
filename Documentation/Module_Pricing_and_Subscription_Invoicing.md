@@ -48,14 +48,14 @@ For every package: total = package base + required modules absent from that pack
 
 ## Request and invoice workflow
 
-1. Agency owner opens Settings, selects modules, preferred package and worker coverage.
+1. Agency owner opens Subscription & trial (or Settings for an existing active agreement), selects modules, preferred package and worker coverage. Managed trials require a card verified through Stripe first.
 2. Submission validates role, agency scope, CSRF, workspace nonce, options and current worker count. Prices are computed entirely on the server using integer cents.
 3. A transaction saves a uniquely numbered **pro forma subscription invoice**, including the agency name, catalog version, requested and required modules, dependency additions, effective package modules, worker count, line items, comparisons and price-validity date (30 days).
 4. Settings confirms issuance and lists up to 50 recent invoices with authenticated **Download PDF** links. The PDF is generated from the saved snapshot. Records remain stored beyond the displayed 50.
    The PDF includes an itemized charges table, monthly subtotal, worker coverage, validity date, page numbering and module descriptions. Scope identifies selected modules, required dependencies and package inclusions. New invoices save module labels and descriptions at issuance; older invoices use current catalog descriptions while preserving their original financial snapshot.
 5. Repeating an identical request key returns the existing invoice; changing selections with an already-used key is rejected. A fresh form permits a new proposal. Invoice creation is audited and queues an internal outbox event; it does not send email automatically.
 
-These are proposals, not paid invoices or tax invoices. Tax is **not calculated**, rather than assumed zero. Payment provider, seller billing/tax identity and final commercial terms must be configured before collecting payment or issuing final tax invoices. Submission does not activate modules, change agency subscription status, start recurring charges, or collect payment. No credit-card details are requested. Subscription records are isolated from client-care invoices and protected by owner/settings permissions and agency scope; PDF responses are private/no-store.
+Pro forma proposals become marked paid only after Stripe confirms an owner-approved payment. Tax is confirmed at checkout when configured; the CareSys PDF is not a tax invoice. A verified-card agency's first module selection starts its configurable free trial and makes its selected package scope available during that period. At expiry, agency access locks until an owner approves and completes payment. No automatic recurring charge is created. Raw card details are collected only by Stripe. Subscription records remain isolated from client-care invoices, and PDF responses are private/no-store. See [the trial and payment workflow](Agency_Free_Trial_and_Payments.md) for configuration and API contracts.
 
 ## Market comparison used for introductory positioning
 

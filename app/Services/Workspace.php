@@ -22,7 +22,7 @@ class Workspace
         'worker' => ['employment'],
     ];
 
-    public function __construct(public int $userId, ?string $agencyRef = null, ?BaseConnection $db = null)
+    public function __construct(public int $userId, ?string $agencyRef = null, ?BaseConnection $db = null, bool $billingOnly=false)
     {
         $this->db = $db ?? db_connect();
         $user = $this->db->table('users')->where('id',$userId)->where('active',1)->where('deleted_at',null)->get()->getRowArray();
@@ -38,6 +38,7 @@ class Workspace
             if (!$membership) throw new DomainError('Workspace unavailable.',404);
             $this->agency = $agency;
             $this->membership = $membership;
+            if(!$billingOnly)(new AgencyAccessService($this))->assertAccess();
         }
     }
 
@@ -49,6 +50,7 @@ class Workspace
         $member = $this->db->table('cs_memberships')->where(['id'=>$this->membership['id'],'user_id'=>$this->userId,'state'=>'active'])->get()->getRowArray();
         if (!$member || !in_array($module,self::ROLES[$member['role']] ?? [],true)) throw new DomainError('This role cannot access that module.',403);
         $this->agency=$agency;$this->membership=$member;
+        (new AgencyAccessService($this))->assertAccess();
         if(in_array($module,['recruitment','history'],true) && !empty($agency['entitlement_until']) && $agency['entitlement_until']<gmdate('Y-m-d'))throw new DomainError('This recruitment entitlement has expired.',403);
         if ($module !== 'self' && $module !== 'settings' && !in_array($module,json_decode($agency['modules'],true),true)) throw new DomainError('This module requires an agency entitlement.',403);
         if (in_array($module,['recruitment','history'],true) && ($agency['verification'] !== 'verified' || !in_array($agency['subscription'],['active','trial'],true))) throw new DomainError('Verified agency and current recruitment access required.',403);
@@ -58,6 +60,15 @@ class Workspace
     public function can(string $module): bool
     {
         try { $this->require($module); return true; } catch (DomainError) { return false; }
+    }
+
+    public function requireBilling(): void
+    {
+        if(!$this->agency||!$this->membership)throw new DomainError('Choose an agency workspace.',403);
+        $member=$this->table('memberships')->where(['user_id'=>$this->userId,'state'=>'active','role'=>'owner'])->get()->getRowArray();
+        $agency=$this->db->table('cs_agencies')->where('id',$this->agency['id'])->get()->getRowArray();
+        if(!$member||$agency['verification']==='suspended')throw new DomainError('Active agency owner permission required.',403);
+        $this->agency=$agency;$this->membership=$member;
     }
 
     public function ownPerson(): array

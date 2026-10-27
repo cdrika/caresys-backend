@@ -12,7 +12,7 @@ final class SubscriptionPricing
 
     public static function catalog(): array
     {
-        return ['version'=>self::VERSION,'currency'=>'USD','extra_worker_cents'=>300,'module_cents'=>self::MODULE_CENTS,'module_labels'=>SubscriptionQuote::MODULES,'dependencies'=>self::DEPENDENCIES,'packages'=>[
+        return ['version'=>self::VERSION,'currency'=>'USD','extra_worker_cents'=>300,'module_cents'=>self::MODULE_CENTS,'module_labels'=>SubscriptionQuote::MODULES,'module_descriptions'=>SubscriptionQuote::DESCRIPTIONS,'dependencies'=>self::DEPENDENCIES,'packages'=>[
             'custom'=>['label'=>'Custom platform','base_cents'=>2900,'included_workers'=>10,'modules'=>['people']],
             'starter'=>['label'=>'Starter package','base_cents'=>5900,'included_workers'=>10,'modules'=>self::STARTER],
             'operations'=>['label'=>'Operations package','base_cents'=>12900,'included_workers'=>30,'modules'=>self::OPERATIONS],

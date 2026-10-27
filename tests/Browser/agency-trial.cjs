@@ -1,0 +1,30 @@
+const {chromium}=require(process.env.CARESYS_NODE_MODULES+'/playwright');
+const {execFileSync}=require('node:child_process');const assert=require('node:assert/strict');const fs=require('node:fs');
+const fixture=(command,ref)=>execFileSync('C:/xampp/php/php.exe',['tests/Browser/trial-fixture.php',command,...(ref?[ref]:[])],{encoding:'utf8'}).trim().split(/\r?\n/).at(-1);
+const signIn=async(context,name)=>{const page=await context.newPage();await page.goto('https://localhost:8444/login');await page.locator('[name=email]').fill(name+'@caresys.test');await page.locator('[name=password]').fill('CareSysDemo!2026');await Promise.all([page.waitForURL('**/app'),page.getByRole('button',{name:/Sign in/}).click()]);return page;};
+(async()=>{
+ const data=JSON.parse(fixture('create'));const browser=await chromium.launch({headless:true,channel:'msedge'});
+ try{
+  fs.mkdirSync('build/qa/agency-trial',{recursive:true});
+  const context=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:1280,height:1000}});const page=await signIn(context,'owner');const base='https://localhost:8444/agency/'+data.ref;
+  await page.goto(base+'/dashboard');assert.equal(page.url(),base+'/billing');assert.match(await page.locator('body').innerText(),/No subscription payment is deducted during the trial/);assert.equal(await page.locator('input[name=card_number]').count(),0);
+  await page.screenshot({path:'build/qa/agency-trial/card-required.png',fullPage:true});
+  const mobile=await browser.newContext({ignoreHTTPSErrors:true,extraHTTPHeaders:{Authorization:'Bearer '+data.tokens.owner}});
+  let response=await mobile.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing');assert.equal(response.status(),200);assert.equal((await response.json()).data.state,'awaiting_card');
+  response=await mobile.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/candidates?purpose=QA');assert.equal(response.status(),402);
+  response=await mobile.request.post('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing/invoices',{data:{modules:['people'],worker_count:10,service_level:'custom',request_key:'1'.repeat(32)}});assert.equal(response.status(),409);
+  fixture('verified',data.ref);await page.reload();const form=page.locator('form[data-form-action=subscription_request]');await form.locator('input[value=people]').check();await form.locator('input[value=scheduling]').check();await form.getByRole('button',{name:'Request subscription quote'}).click();await page.waitForLoadState();assert.match(await page.locator('body').innerText(),/Status: trial/);assert.equal(await page.getByRole('button',{name:'Approve payment on Stripe'}).count(),0);
+  response=await mobile.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing');const active=(await response.json()).data;assert.equal(active.state,'trial');assert.equal(active.trial_days,30);assert.ok(active.invoices.length);await page.screenshot({path:'build/qa/agency-trial/trial-active.png',fullPage:true});
+  response=await mobile.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing/invoices/'+active.invoice_ref+'/download');assert.equal(response.status(),200);const pdf=await response.body();assert.equal(pdf.subarray(0,8).toString(),'%PDF-1.4');fs.writeFileSync('build/qa/agency-trial/trial-invoice.pdf',pdf);
+  fixture('expire',data.ref);await page.goto(base+'/dashboard');assert.equal(page.url(),base+'/billing');assert.match(await page.locator('body').innerText(),/Trial or paid access has ended/);assert.equal(await page.getByRole('button',{name:'Approve payment on Stripe'}).count(),1);await page.screenshot({path:'build/qa/agency-trial/owner-payment-required.png',fullPage:true});
+  response=await mobile.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/candidates?purpose=QA');assert.equal(response.status(),402);
+  const memberContext=await browser.newContext({ignoreHTTPSErrors:true,viewport:{width:390,height:844}});const member=await signIn(memberContext,'caregiver');await member.goto(base+'/dashboard');assert.match(await member.locator('body').innerText(),/This agency account is locked/);assert.equal(await member.getByRole('button',{name:/Stripe|payment/i}).count(),0);assert.equal(await member.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);await member.screenshot({path:'build/qa/agency-trial/member-locked.png',fullPage:true});
+  const memberApi=await browser.newContext({ignoreHTTPSErrors:true,extraHTTPHeaders:{Authorization:'Bearer '+data.tokens.caregiver}});
+  response=await memberApi.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing');assert.deepEqual(Object.keys((await response.json()).data),['state','locked','owner','notice']);
+  response=await memberApi.request.get('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing/invoices/'+active.invoice_ref+'/download');assert.equal(response.status(),403);
+  response=await memberApi.request.post('https://127.0.0.1:8443/mobile/v1/agencies/'+data.ref+'/billing/checkout/payment',{data:{request_key:'2'.repeat(32),confirm:'yes',invoice_ref:active.invoice_ref}});assert.equal(response.status(),403);
+  await page.goto('https://localhost:8444/app/billing-policy');assert.equal((await page.locator('body').innerText()).includes('Platform administrator access required'),true);
+  const adminContext=await browser.newContext({ignoreHTTPSErrors:true});const admin=await signIn(adminContext,'platform');await admin.goto('https://localhost:8444/app/billing-policy');assert.equal(await admin.locator('[name=trial_days] option').count(),365);assert.equal(await admin.locator('[name=trial_days]').inputValue(),'30');
+  console.log('PASS: card prerequisite, selectable trial modules/invoice PDF, exact agency gate, owner payment prompt, member lock/privacy, mobile bearer enforcement, and administrator policy controls.');
+ }finally{await browser.close();fixture('cleanup',data.ref);}
+})().catch(error=>{console.error(error.stack);process.exitCode=1;});
