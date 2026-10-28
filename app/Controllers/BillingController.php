@@ -25,8 +25,9 @@ class BillingController extends BaseController
             $w=new Workspace((int)auth()->id(),$agencyRef,null,true);$w->requireBilling();
             if(!service('throttler')->check('billing_web_'.$w->userId,20,60))throw new DomainError('Too many billing requests. Try again shortly.',429);
             $data=$this->request->getPost();
-            $allowed=match($action){'quote'=>['modules','service_level','worker_count','request_key'],'setup','payment'=>['request_key','confirm','invoice_ref'],'complete'=>['ref'],'policy'=>['trial_days','version'],default=>throw new DomainError('Billing action unavailable.',404)};
+            $allowed=match($action){'quote'=>['modules','service_level','worker_count','request_key'],'setup','payment'=>['request_key','confirm','invoice_ref'],'test-setup','test-expire','test-payment'=>['confirm','invoice_ref'],'complete'=>['ref'],'policy'=>['trial_days','version'],default=>throw new DomainError('Billing action unavailable.',404)};
             if(array_diff(array_keys($data),array_merge($allowed,['workspace_nonce','csrf_test_name','return_page'])))throw new DomainError('Unsupported billing fields.');
+            if(str_starts_with($action,'test-')){(new \App\Services\LocalBillingSimulator($w))->run($action,$data);return redirect()->to($target)->with('message','Simulated billing action completed. No card saved and no money collected.');}
             $billing=new TrialBillingService($w);
             if($action==='quote'){(new SubscriptionBillingService($w))->issue($data);return redirect()->to($target)->with('message','Invoice issued. Your free trial and access status are shown below.');}
             if($action==='complete'){$billing->complete(Workspace::text($data,'ref',32));return redirect()->to($target)->with('message','Stripe verification completed. Your current access status is shown below.');}

@@ -1,0 +1,38 @@
+{
+  "checks": [
+    {
+      "name": "Disposable agency registered",
+      "passed": true
+    },
+    {
+      "name": "Local test controls enabled",
+      "passed": true
+    },
+    {
+      "name": "Simulated setup requires no card",
+      "passed": true
+    },
+    {
+      "name": "Trial starts with module invoice",
+      "passed": true
+    },
+    {
+      "name": "Invoice downloads",
+      "passed": true
+    },
+    {
+      "name": "Invoice clearly labelled test only",
+      "passed": true
+    },
+    {
+      "name": "Trial expires and locks account",
+      "passed": true
+    },
+    {
+      "name": "Explicit simulated payment unlocks",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "executed_at": "2026-10-28T06:52:07.985Z"
+}

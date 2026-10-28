@@ -67,3 +67,6 @@
 #--------------------------------------------------------------------
 
 # logger.threshold = 4
+
+# Local development only. Disabled in production and for remote requests.
+# billing.localSimulator = false

@@ -13,6 +13,7 @@ class SubscriptionBillingService
             $this->w->requireBilling();
             $subscription=$this->w->table('agency_subscriptions')->get()->getRowArray();
             if(($subscription&&!$subscription['card_verified_at'])||(!$subscription&&$this->w->agency['subscription']!=='active'))throw new DomainError('Save a card securely with Stripe before selecting trial modules.',409);
+            if(($subscription['card_brand']??'')==='TEST' && !LocalBillingSimulator::enabled())throw new DomainError('Local billing simulator is disabled.',403);
             $selection=SubscriptionQuote::selection($data);
             $key=$data['request_key']??'';
             if(!is_string($key)||!preg_match('/^[a-f0-9]{32}$/D',$key))throw new DomainError('Refresh the invoice form and submit again.');
@@ -26,6 +27,7 @@ class SubscriptionBillingService
             if($selection['worker_count']<$active)throw new DomainError('Choose a worker count covering at least your '.$active.' active workers.');
             $snapshot=SubscriptionPricing::calculate($selection);
             $snapshot['module_details']=array_map(static fn($key)=>['key'=>$key,'label'=>SubscriptionQuote::MODULES[$key],'description'=>SubscriptionQuote::DESCRIPTIONS[$key]],$snapshot['effective_modules']);
+            $snapshot['simulated_billing']=($subscription['card_brand']??'')==='TEST';
             $snapshot['agency']=\App\Libraries\AgencyContact::snapshot($this->w->agency);
             $snapshot['issued_at']=gmdate('Y-m-d H:i:s');
             $snapshot['valid_until']=gmdate('Y-m-d',time()+30*86400);

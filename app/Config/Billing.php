@@ -8,4 +8,5 @@ class Billing extends BaseConfig
     public string $stripeWebhookSecret='';
     public string $webBaseURL='https://localhost:8444';
     public bool $automaticTax=false;
+    public bool $localSimulator=false;
 }

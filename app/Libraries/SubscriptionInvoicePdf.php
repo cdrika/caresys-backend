@@ -9,6 +9,7 @@ final class SubscriptionInvoicePdf
     private int $y=0;
     private string $number='';
     private bool $paid=false;
+    private bool $simulated=false;
 
     public static function render(array $invoice): string
     {
@@ -34,7 +35,7 @@ final class SubscriptionInvoicePdf
         $this->box(0,828,595,14,'0.06 0.43 0.39');
         $this->text('CareSys',42,784,25,true,'0.06 0.43 0.39');
         $this->text('SUBSCRIPTION INVOICE',310,790,15,true);
-        $this->text($this->paid?'PAID / SUBSCRIPTION SUMMARY':'PRO FORMA / MONTHLY PROPOSAL',310,771,9,false,'0.35 0.43 0.46');
+        $this->text($this->simulated?'TEST ONLY / NO MONEY COLLECTED':($this->paid?'PAID / SUBSCRIPTION SUMMARY':'PRO FORMA / MONTHLY PROPOSAL'),310,771,9,false,'0.35 0.43 0.46');
         $this->box(42,749,511,1,'0.82 0.88 0.87');
         $this->text($this->number,42,728,10,true);
         $this->y=700;
@@ -55,6 +56,7 @@ final class SubscriptionInvoicePdf
     private function document(array $invoice): string
     {
         $s=json_decode($invoice['snapshot'],true,512,JSON_THROW_ON_ERROR);
+        $this->simulated=(bool)($s['simulated_billing']??false);
         $money=static fn(int $c)=>number_format($c/100,2,'.',',');
         $this->paid=($invoice['state']??'')==='paid';
         $this->number=$invoice['invoice_no'];$this->page();
@@ -107,7 +109,7 @@ final class SubscriptionInvoicePdf
         }
         $this->ensure(65);$this->y-=8;
         $this->paragraph('TERMS & BILLING NOTES',10,true);
-        $this->paragraph($this->paid?'This subscription summary accompanies your Stripe payment receipt; it is not a tax invoice.':'Prices are valid through the date above. This is a pro forma proposal, not a tax invoice.',9);
+        $this->paragraph($this->simulated?'TEST ONLY. Simulated billing; no real card or payment. This is not a payment receipt.':($this->paid?'This subscription summary accompanies your Stripe payment receipt; it is not a tax invoice.':'Prices are valid through the date above. This is a pro forma proposal, not a tax invoice.'),9);
         $this->paragraph('Catalog version: '.$s['catalog_version'].'. Access remains subject to the agreed subscription.',9);
         $this->pages[]=$this->content;
         $objects=['<< /Type /Catalog /Pages 2 0 R >>','', '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>','<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>'];$kids=[];

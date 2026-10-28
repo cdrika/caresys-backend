@@ -100,4 +100,44 @@ final class AgencyTrialTest extends CIUnitTestCase
         $this->denied(fn()=>new Workspace($caregiver,$this->w->agency['ref'],$this->connection),402);
         $this->denied(fn()=>$service->begin('payment',array_replace($data,['request_key'=>bin2hex(random_bytes(16))])),409);
     }
+
+    public function testLocalSimulatorTrialInvoiceExpiryApprovalAndDisable(): void
+    {
+        $config=config('Billing');$old=$config->localSimulator;$config->localSimulator=true;
+        try{
+            $sim=new \App\Services\LocalBillingSimulator($this->w);
+            $sim->run('test-setup',['confirm'=>'yes']);
+            $this->assertSame('awaiting_modules',(new AgencyAccessService($this->w))->status()['state']);
+            $invoice=$this->invoice();$this->assertTrue(json_decode($invoice['snapshot'],true)['simulated_billing']);$this->assertStringContainsString('TEST ONLY',\App\Libraries\SubscriptionInvoicePdf::render($invoice));$access=new AgencyAccessService($this->w);
+            $this->assertSame('trial',$access->status()['state']);
+            $this->denied(fn()=>$sim->run('test-payment',['confirm'=>'yes','invoice_ref'=>$invoice['ref']]),409);
+            $sim->run('test-expire',['confirm'=>'yes']);
+            $this->assertSame('payment_required',$access->status()['state']);
+            $caregiver=(int)$this->connection->table('users')->where('username','caregiver')->get()->getRow()->id;
+            $this->denied(fn()=>new Workspace($caregiver,$this->w->agency['ref'],$this->connection),402);
+            $nonowner=new \App\Services\LocalBillingSimulator(new Workspace($caregiver,$this->w->agency['ref'],$this->connection,true));
+            $this->denied(fn()=>$nonowner->run('test-payment',['confirm'=>'yes','invoice_ref'=>$invoice['ref']]),403);
+            $this->denied(fn()=>$sim->run('test-payment',['invoice_ref'=>$invoice['ref']]),422);
+            $sim->run('test-payment',['confirm'=>'yes','invoice_ref'=>$invoice['ref']]);
+            $paid=$access->status();$this->assertSame('paid',$paid['state']);
+            $sim->run('test-payment',['confirm'=>'yes','invoice_ref'=>$invoice['ref']]);
+            $this->assertSame($paid['paid_until'],$access->status()['paid_until']);
+            $this->assertSame('paid',(new SubscriptionBillingService($this->w))->get($invoice['ref'])['state']);
+            $this->assertSame(0,$this->w->table('billing_checkouts')->countAllResults());
+            $this->denied(fn()=>(new TrialBillingService($this->w,$this->stripe))->begin('setup',['request_key'=>bin2hex(random_bytes(16)),'confirm'=>'yes']),409);
+            $config->localSimulator=false;
+            $this->assertTrue($access->status()['locked']);
+            $this->denied(fn()=>$sim->run('test-setup',['confirm'=>'yes']),403);
+        }finally{$config->localSimulator=$old;}
+    }
+    public function testLocalSimulatorCannotChangeRealStripeAccount(): void
+    {
+        $config=config('Billing');$old=$config->localSimulator;$config->localSimulator=true;
+        try{
+            $this->verifyCard();$before=(new AgencyAccessService($this->w))->status();
+            $sim=new \App\Services\LocalBillingSimulator($this->w);
+            $this->denied(fn()=>$sim->run('test-setup',['confirm'=>'yes']),409);
+            $this->assertSame($before,(new AgencyAccessService($this->w))->status());
+        }finally{$config->localSimulator=$old;}
+    }
 }

@@ -13,6 +13,7 @@ final class AgencyAccessService
             $active=$this->w->agency['subscription']==='active';
             return ['state'=>$active?'legacy_active':'awaiting_card','locked'=>!$active,'owner'=>$this->w->membership['role']==='owner','trial_days'=>(int)$this->w->db->table('cs_billing_policy')->where('id',1)->get()->getRow()->trial_days];
         }
+        if($row['card_brand']==='TEST' && !LocalBillingSimulator::enabled())return ['state'=>'test_billing_disabled','locked'=>true,'owner'=>$this->w->membership['role']==='owner','trial_days'=>(int)($row['trial_days']??30),'card_verified'=>false,'card_brand'=>'TEST'];
         $trialEnd=$row['trial_ends_at']?strtotime($row['trial_ends_at'].' UTC'):0;
         $paidEnd=$row['paid_until']?strtotime($row['paid_until'].' UTC'):0;
         $state=$paidEnd>$now?'paid':($trialEnd>$now?'trial':($trialEnd||$paidEnd?'payment_required':($row['card_verified_at']?'awaiting_modules':'awaiting_card')));

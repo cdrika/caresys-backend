@@ -12,6 +12,8 @@ final class TrialBillingService
         if(!$s['owner'])return ['state'=>$s['state'],'locked'=>$s['locked'],'owner'=>false,'notice'=>$s['locked']?'This agency account is locked. Contact your agency owner.':'Agency access is available.'];
         $this->w->requireBilling();
         $s['stripe_configured']=$this->stripe->configured();
+        $s['local_simulator']=LocalBillingSimulator::enabled();
+        $s['simulated_billing']=($s['card_brand']??'')==='TEST';
         $s['notice']='No subscription charge is made during your free trial. After it ends, agency access is locked until an owner approves and completes payment.';
         $s['invoices']=$this->w->table('subscription_invoices')->select('ref,invoice_no,currency,total_cents,state,created_at')->orderBy('id','DESC')->limit(50)->get()->getResultArray();
         if($s['invoice_ref']??null){$invoice=$this->w->table('subscription_invoices')->where('ref',$s['invoice_ref'])->get()->getRowArray();if($invoice){$snapshot=json_decode($invoice['snapshot'],true);$s['current_selection']=['modules'=>$snapshot['requested_modules'],'service_level'=>$snapshot['preferred_package'],'worker_count'=>$snapshot['worker_count']];}}
@@ -28,6 +30,7 @@ final class TrialBillingService
             if(($data['confirm']??'')!=='yes')throw new DomainError('Confirm the displayed card or payment terms.');
             $access=new AgencyAccessService($this->w);$access->enroll();
             $row=$this->w->table('agency_subscriptions')->get()->getRowArray();$state=$access->status();
+            if($row['card_brand']==='TEST')throw new DomainError('This is a simulated billing account. Use local test controls or register a fresh agency for real Stripe billing.',409);
             if($purpose==='payment' && ($state['state']!=='payment_required'||!$row['card_verified_at']))throw new DomainError('Payment is available only after the trial or paid period ends. No trial charge is permitted.',409);
             $invoice=null;
             if($purpose==='payment'){
