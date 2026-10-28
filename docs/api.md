@@ -49,3 +49,13 @@ Separate agreed `part_time` employments can be active across agencies. Visit cre
 | POST | /me/shift-requests/{reference}/decision | `version`, `decision` approve/decline; approval also needs `confirm=yes` and current `password`. Returns state and resulting visit ref. |
 
 Request times and suggested times use `YYYY-MM-DDTHH:mm` in the route agency timezone. Prior-shift times in the caregiver response and request expiry are UTC. These are scheduling gaps, not confirmed work-hour or travel availability. Shift length is limited to 24 hours and suggestions search seven days. All normal role, access, CSRF and workspace checks apply. Stale, expired, leave-blocked or started-shift replacements fail with no cancellations. A request expires within 24 hours or at its proposed start.
+
+## In-app agency registration notifications
+
+These browser-session routes are outside the /api/v1 namespace:
+
+- GET /notifications/menu returns only the current actor's eligible unread count and escaped menu HTML. It uses no-store caching and requires authentication.
+- POST /notifications/{reference}/read marks only an eligible notification addressed to that actor. It requires the session CSRF token, has an explicit input allowlist, and redirects to the personal inbox. Notification read state is personal and independent of the currently selected agency, so no agency workspace nonce is needed for this route.
+- GET /app/notifications opens the personal inbox, including while agency access is locked or suspended.
+
+The personal registration form includes a 32-hex registration_key. Replaying a key for the same actor and normalized registration returns the original agency; changed data is rejected. Platform verification remains restricted to a live platform operator and requires the current agency version and a review basis. Approval does not change billing or module entitlements. Registration and verification write their recipient-specific notifications in the same database transaction as the business change. These are in-app messages; the existing provider outbox is not treated as delivered email or push.

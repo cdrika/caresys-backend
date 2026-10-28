@@ -38,7 +38,8 @@ class WorkspaceController extends BaseController
     private function personalData(Workspace $w,string $page,array &$d): void
     {
         $pid=$w->person['id'];
-        if(!in_array($page,['dashboard','profile','career','privacy','opportunities','offers','activity','agencies','platform','shift_requests'],true)) throw new DomainError('Page unavailable.',404);
+        if($page==='notifications')$d['notification_inbox']=(new \App\Services\NotificationService($w))->inbox(100);
+        if(!in_array($page,['dashboard','profile','career','privacy','opportunities','offers','activity','agencies','platform','shift_requests','notifications'],true)) throw new DomainError('Page unavailable.',404);
         if($page==='shift_requests')$d['shift_requests']=(new \App\Services\ShiftPlanningService($w))->requests();
         $d['profile']=$w->db->table('cs_profiles')->where('person_id',$pid)->get()->getRowArray();
         $d['regions']=implode(', ',array_column($w->db->table('cs_profile_regions')->where('person_id',$pid)->get()->getResultArray(),'region'));
@@ -149,7 +150,7 @@ class WorkspaceController extends BaseController
                 'expense'=>['employment_ref','amount','category','incurred_on','description'],'expense_decision'=>['ref','version','decision','payment_evidence'],
                 'employee_mapping'=>['ref','version','provider_ref'],'payroll'=>['period_start','period_end'],
                 'invoice'=>['client_ref','hourly_rate','invoice_no','due_date','confirm'],'receipt'=>['ref','version','amount','evidence'],
-                'agency'=>['name','country','currency','timezone','official_email','business_phone','contact_number','mobile_number','business_registration_number','include_business_phone','business_is_mobile','business_is_contact','include_mobile_number','include_contact_number','include_address','address_line1','address_line2','address_city','address_state','address_postal_code'],'member'=>['email','role'],'verify_agency'=>['ref','version','verification','basis'],
+                'agency'=>['registration_key','name','country','currency','timezone','official_email','business_phone','contact_number','mobile_number','business_registration_number','include_business_phone','business_is_mobile','business_is_contact','include_mobile_number','include_contact_number','include_address','address_line1','address_line2','address_city','address_state','address_postal_code'],'member'=>['email','role'],'verify_agency'=>['ref','version','verification','basis'],
                 'dispute_resolution'=>['ref','version','state','resolution'],'subscription_request'=>['modules','service_level','worker_count','request_key'],
                 'qualification'=>['name','issuer','issued_on','expires_on','evidence_ref'],'accept_qualification'=>['employment_ref','qualification_ref','evidence'],
                 'balance'=>['employment_ref','minutes','reason'],'correction'=>['ref','proposed_seconds','reason'],'correction_decision'=>['ref','version','decision'],'acknowledge'=>['ref','version'],'credit'=>['ref','version','reason'],

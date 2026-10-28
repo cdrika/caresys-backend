@@ -10,10 +10,24 @@ class AdministrationService
         return $this->w->transaction(function()use($d){
             $country=strtoupper(Workspace::text($d,'country',2));$currency=strtoupper(Workspace::text($d,'currency',3));$tz=Workspace::text($d,'timezone',64);
             if(!preg_match('/^[A-Z]{2}$/D',$country) || !preg_match('/^[A-Z]{3}$/D',$currency) || !in_array($tz,\DateTimeZone::listIdentifiers(),true)) throw new DomainError('Check country, currency and IANA timezone.');
+            if(!isset((new \CommerceGuys\Addressing\Country\CountryRepository())->getList('en')[$country]))throw new DomainError('Choose a valid agency country.');
             $contact=\App\Libraries\AgencyContact::validate($d,$country)+\App\Libraries\AgencyAddress::validate($d,$country);
+            // A personal registration form can be retried safely, without duplicating agencies or alerts.
+            $actor=$this->w->db->query('SELECT id,active,status,deleted_at FROM users WHERE id=? FOR UPDATE',[$this->w->userId])->getRowArray();
+            if(!$actor||!$actor['active']||$actor['deleted_at']||in_array($actor['status'],['suspended','banned','closed'],true))throw new DomainError('Sign in with an active account to register an agency.',401);
+            $key=$d['registration_key']??bin2hex(random_bytes(16));
+            if(!is_string($key)||!preg_match('/^[a-f0-9]{32}$/D',$key))throw new DomainError('Refresh the registration form.');
+            $digest=hash('sha256',json_encode(['name'=>Workspace::text($d,'name',180),'country'=>$country,'currency'=>$currency,'timezone'=>$tz]+$contact,JSON_THROW_ON_ERROR));
+            $previous=$this->w->db->query("SELECT * FROM cs_idempotency WHERE actor_id=? AND operation='register_agency' AND request_key=? FOR UPDATE",[$this->w->userId,$key])->getRowArray();
+            if($previous){
+                if(!hash_equals($previous['digest'],$digest))throw new DomainError('This registration was already submitted with different details. Reload to start a new registration.',409);
+                return $this->w->db->table('cs_agencies')->where('ref',$previous['result_ref'])->get()->getRowArray();
+            }
             $r=$this->w->insert('agencies',['name'=>Workspace::text($d,'name',180),'country'=>$country,'currency'=>$currency,'timezone'=>$tz,'modules'=>'[]']+$contact);
             $this->w->insert('memberships',['agency_id'=>$r['id'],'user_id'=>$this->w->userId,'role'=>'owner']);
             $this->w->db->table('cs_agency_subscriptions')->insert(['agency_id'=>$r['id']]);
+            $this->w->insert('idempotency',['agency_id'=>$r['id'],'actor_id'=>$this->w->userId,'operation'=>'register_agency','request_key'=>$key,'digest'=>$digest,'result_ref'=>$r['ref']]);
+            (new NotificationService($this->w))->registered($r);
             $this->w->audit('agency.registered',$r['ref']);return $r;
         });
     }
@@ -38,11 +52,16 @@ class AdministrationService
     {
         if(!$this->w->operator) throw new DomainError('Platform operator access required.',403);
         $this->w->transaction(function()use($d){
+            if(!$this->w->db->query('SELECT id FROM cs_operators WHERE user_id=? FOR UPDATE',[$this->w->userId])->getRowArray())throw new DomainError('Platform operator permission is no longer active.',403);
             $a=$this->w->db->query('SELECT * FROM cs_agencies WHERE ref=? FOR UPDATE',[$d['ref']??''])->getRowArray();
             if(!$a) throw new DomainError('Agency unavailable.',404);
             $state=$d['verification']??'';if(!in_array($state,['verified','rejected','suspended'],true)) throw new DomainError('Invalid verification decision.');
             $basis=Workspace::text($d,'basis',300);
-            $this->w->update('agencies',$a,['verification'=>$state],(int)$d['version']);$this->w->audit('agency.'.$state,$a['ref'],null,$basis);
+            if((int)($d['version']??0)!==(int)$a['version'])throw new DomainError('Agency status changed. Refresh and review again.',409);
+            if($a['verification']===$state)return;
+            $a=$this->w->update('agencies',$a,['verification'=>$state],(int)$d['version']);
+            (new NotificationService($this->w))->decision($a,$basis);
+            $this->w->audit('agency.'.$state,$a['ref'],null,$basis);
         });
     }
 

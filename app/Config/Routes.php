@@ -10,6 +10,8 @@ $routes->group('', ['filter'=>'session'], static function($routes) {
     $routes->get('reference/locations','ReferenceController::locations');
     $routes->get('reference/address-format','ReferenceController::addressFormat');
     $routes->get('app','WorkspaceController::personal');
+    $routes->get('notifications/menu','NotificationController::menu');
+    $routes->post('notifications/(:segment)/read','NotificationController::read/$1');
     $routes->get('app/billing-policy','BillingPolicyController::index');
     $routes->post('app/billing-policy','BillingPolicyController::save');
     $routes->get('app/(:segment)','WorkspaceController::personal/$1');

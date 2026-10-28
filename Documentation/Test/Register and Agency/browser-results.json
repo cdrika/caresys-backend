@@ -1,0 +1,160 @@
+{
+  "executed_at": "2026-10-28T06:19:25.047Z",
+  "timezone": "America/Los_Angeles",
+  "agency_name": "QA Agency Notifications 1793168294330",
+  "checks": [
+    {
+      "name": "Guest cannot read notification menu",
+      "passed": true,
+      "detail": "HTTP 302"
+    },
+    {
+      "name": "Personal account registration succeeds",
+      "passed": true,
+      "detail": "{\"url\":\"https://localhost:8444/app\",\"alerts\":[]}"
+    },
+    {
+      "name": "New account has empty inbox",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Phone fields hidden until selected",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Address hidden until selected",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Agency registration redirects to billing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Registration does not enable Stripe or charge",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Notification menu available on locked billing",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Owner receives pending review receipt",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Agency owner cannot access platform review",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Registration retry redirects to same agency",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Administrator receives registration review alert",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Owner cannot mark administrator notification as read",
+      "passed": true,
+      "detail": "HTTP 404"
+    },
+    {
+      "name": "Notification read requires CSRF token",
+      "passed": true,
+      "detail": "HTTP 403"
+    },
+    {
+      "name": "Review shows official contact and address",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Platform decision verified",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Owner receives verified and approved notification",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Owner can mark decision read",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Platform decision rejected",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Notification count updates without page reload",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Rejected status notification is accurate",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Platform decision suspended",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Suspended owner can still view personal notifications",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Suspension restricts agency access",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Platform decision verified",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Approval leaves trial awaiting card",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Mobile notification panel stays below trigger and inside viewport",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "name": "Notification menu available on platform policy page",
+      "passed": true,
+      "detail": ""
+    }
+  ],
+  "screenshots": [
+    "screenshots/01-empty-owner-inbox.png",
+    "screenshots/02-complete-registration-form.png",
+    "screenshots/03-registration-received-billing.png",
+    "screenshots/04-platform-review-notification.png",
+    "screenshots/05-platform-registration-review.png",
+    "screenshots/06-owner-approved-notification.png",
+    "screenshots/07-owner-rejection-notification.png",
+    "screenshots/08-owner-suspension-notification.png",
+    "screenshots/09-mobile-billing-notifications.png"
+  ],
+  "passed": true,
+  "credentials_included": false
+}

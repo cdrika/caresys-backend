@@ -1,0 +1,255 @@
+Class,Scenario,Assertions,Result
+MultiAgencySchedulingTest,testCrossAgencyOverlapIsBlockedAndSuggestionsDoNotExposeForeignRecords,8,PASS
+MultiAgencySchedulingTest,testCaregiverApprovalAtomicallyReplacesShiftAndAlertsPriorAgency,9,PASS
+MultiAgencySchedulingTest,testOnlyTheNamedCaregiverCanDecideAndApprovalRequiresPasswordAndConfirmation,5,PASS
+MultiAgencySchedulingTest,testDeclineAndExpiryLeaveOriginalShiftIntact,3,PASS
+MultiAgencySchedulingTest,testScheduleChangesAndLostSchedulingPermissionInvalidateApproval,3,PASS
+MultiAgencySchedulingTest,testQualificationFailureRollsBackPriorCancellations,3,PASS
+MultiAgencySchedulingTest,testApprovedLeaveAndStartedShiftsCannotBeReplaced,4,PASS
+MultiAgencySchedulingTest,testTimezoneChecksUseUtcAndTouchingShiftsAreAllowed,2,PASS
+MultiAgencySchedulingTest,testNewLeaveAfterRequestPreventsApprovalWithoutCancellingOriginal,2,PASS
+MultiAgencySchedulingTest,testAllConflictingShiftsRequireOneExplicitDecisionAndCrossAgencyClockIsBlocked,3,PASS
+MultiAgencySchedulingTest,testTwoPartTimeContractsCanActivateAndOffboardingPreservesOtherAgency,4,PASS
+MultiAgencySchedulingTest,testFullTimeContractStillRequiresPolicyReviewBeforeConcurrentEmployment,1,PASS
+WorkflowTest,testQuoteSelectionsAreRecordedWithoutChangingAgencyAccess,11,PASS
+WorkflowTest,testDirectoryProjectionAndPauseAreEnforced,5,PASS
+WorkflowTest,testUnverifiedAndUnentitledAgenciesCannotSearch,2,PASS
+WorkflowTest,testTenantAndRoleBoundaries,4,PASS
+WorkflowTest,testHistoryIsVersionScopedRecipientScopedAndRevocable,7,PASS
+WorkflowTest,testExpiredGrantFailsOnNextRead,1,PASS
+WorkflowTest,testActivationIsMutualExplicitAndIdempotent,4,PASS
+WorkflowTest,testFutureActivationWaitsAndWithdrawalPreventsActivation,2,PASS
+WorkflowTest,testNewContractVersionInvalidatesBothPriorAgreements,4,PASS
+WorkflowTest,testSchedulingBlocksOverlapsAndCrossAgencyClient,2,PASS
+WorkflowTest,testActualElapsedTimeUsesUtcAndCapturedBreaks,1,PASS
+WorkflowTest,testDuplicateClockDoesNotCreateAdditionalWork,3,PASS
+WorkflowTest,testLeaveApprovalAndCancellationKeepBalanceLedger,3,PASS
+WorkflowTest,testAssetHasOnlyOneCustodianAndRetainsReturn,2,PASS
+WorkflowTest,testPayrollAndBillingCannotAllocateSourcesTwice,6,PASS
+WorkflowTest,testCsvFormulaInjectionIsEscaped,2,PASS
+WorkflowTest,testExpiredQualificationCannotBeAcceptedOrAssigned,2,PASS
+WorkflowTest,testCorrectionPreservesOriginalClockAndRequiresTimeReapproval,4,PASS
+WorkflowTest,testCreditRetainsInvoiceAndPreventsDuplicateCredit,3,PASS
+WorkflowTest,testCareerCorrectionDoesNotExpandExistingGrant,2,PASS
+WorkflowTest,testGuidedProfileSelectionsSaveAndLocationSearchMatchesHierarchy,3,PASS
+AssetRaceTest,testTwoIndependentMysqlTransactionsProduceOneCustodian,7,PASS
+ShiftRaceTest,testDifferentAgencyTransactionsCannotDoubleBookOnePerson,7,PASS
+AgencyContactRegistrationTest,testRegistrationPersistsNormalizedContactsAndInvoiceKeepsItsSnapshot,9,PASS
+AgencyContactRegistrationTest,testRegistrationCanOmitAllPhoneNumbers,3,PASS
+AgencyContactRegistrationTest,testInvalidContactDoesNotCreateAgencyOrMembership,2,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""minimal no optional details""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""normalized country currency""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""business registration supplied""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""business reused for both roles""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""UK landline shared as contact""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""separate Australian mobile""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""separate contact only""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""three different numbers""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""disabled optional values discarded""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""US address""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""Canadian address""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""UK address optional county""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""UAE address no postal code""",4,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""missing name""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""overlong name""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""missing official email""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""malformed official email""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""country wrong length""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""unknown country""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""currency invalid format""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""currency wrong length""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""timezone invalid""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""selected business missing""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""selected business invalid""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""selected mobile missing""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""selected contact missing""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""landline cannot be mobile""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""address missing street""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""address missing city""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""address state invalid""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""address zip invalid""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""registration number too long""",3,PASS
+AgencyRegistrationNotificationTest,"testRegistrationCases with data set ""malformed retry key""",3,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 0 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 0 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 0 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 0 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 1 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 1 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 1 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 1 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 2 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 2 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 2 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 2 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 3 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 3 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 3 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 3 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 4 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 4 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 4 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 4 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 5 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 5 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 5 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 5 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 6 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 6 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 6 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 6 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 7 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 7 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 7 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 7 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 8 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 8 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 8 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 8 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 9 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 9 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 9 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 9 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 10 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 10 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 10 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 10 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 11 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 11 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 11 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 11 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 12 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 12 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 12 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 12 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 13 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 13 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 13 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 13 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 14 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 14 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 14 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 14 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 15 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 15 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 15 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 15 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 16 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 16 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 16 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 16 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 17 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 17 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 17 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 17 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 18 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 18 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 18 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 18 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 19 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 19 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 19 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 19 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 20 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 20 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 20 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 20 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 21 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 21 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 21 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 21 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 22 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 22 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 22 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 22 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 23 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 23 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 23 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 23 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 24 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 24 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 24 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 24 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 25 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 25 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 25 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 25 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 26 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 26 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 26 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 26 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 27 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 27 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 27 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 27 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 28 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 28 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 28 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 28 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 29 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 29 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 29 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 29 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 30 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 30 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 30 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 30 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 31 address 0 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 31 address 0 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 31 address 1 registration 0""",7,PASS
+AgencyRegistrationNotificationTest,"testAllOptionalRegistrationCombinations with data set ""phone flags 31 address 1 registration 1""",7,PASS
+AgencyRegistrationNotificationTest,testPlatformAlertAndOwnerReceiptArePrivateAndLinkedToReview,5,PASS
+AgencyRegistrationNotificationTest,testApprovalRejectionSuspensionAndReapprovalNotifyOwnerWithoutStartingTrial,11,PASS
+AgencyRegistrationNotificationTest,testUnauthorizedInvalidAndStaleApprovalDoNotChangeStateOrSendAlerts,8,PASS
+AgencyRegistrationNotificationTest,testRegistrationRetryIsIdempotentAndChangedPayloadIsRejected,3,PASS
+AgencyRegistrationNotificationTest,testReadStateIsRecipientScopedAndIdempotent,4,PASS
+AgencyRegistrationNotificationTest,testRoleRevocationHidesNotificationsAndEmptyInboxRenders,3,PASS
+AgencyRegistrationNotificationTest,testNoActiveOperatorsDoesNotInventRecipientAndOwnerStillGetsReceipt,1,PASS
+AgencyRegistrationNotificationTest,testAllActiveOperatorsAndOwnersReceiveTheirOwnAlerts,2,PASS
+AgencyRegistrationNotificationTest,testInactiveOperatorIsNotSentRegistrationAlert,1,PASS
+AgencyRegistrationNotificationTest,testNotificationFailureRollsBackRegistrationAndApproval,4,PASS
+AgencyRegistrationNotificationTest,testRetryKeyIsScopedToTheRegisteringAccount,1,PASS
+AgencyRegistrationNotificationTest,testRevokedPlatformRoleCannotApproveUsingStaleWorkspace,2,PASS
+AgencyRegistrationNotificationTest,testDisabledAccountCannotRegisterUsingStaleWorkspace,1,PASS
+AgencyRegistrationNotificationTest,testNotificationCreationAndReadTimesAreStoredInUtc,4,PASS
+AgencyRegistrationNotificationTest,testMarkupInAgencyNameIsEscapedInMenu,2,PASS
+AgencyTrialTest,testCardRequiredAndTrialBoundaryUsesPolicySnapshot,11,PASS
+AgencyTrialTest,testVerifiedPaymentUnlocksOnceAndRenewalNeedsAnotherApproval,12,PASS
+DatabaseAccessTest,testApplicationUsesItsOwnSchemaWithoutGlobalOrDdlPrivileges,9,PASS
+DatabaseAccessTest,testTestConnectionIsIsolatedOnActualMysql,5,PASS
+MobilePairingTest,testApprovalAndOneTimeRedemption,9,PASS
+MobilePairingTest,testExpiredAndForeignSecretsCannotBeRedeemed,3,PASS
+ExampleDatabaseTest,testModelFindAll,1,PASS
+ExampleDatabaseTest,testSoftDeleteLeavesRow,2,PASS
+ExampleSessionTest,testSessionSimple,1,PASS
+AgencyAddressTest,testOptOutDiscardsAllAddressValues,3,PASS
+AgencyAddressTest,testUSStateAndZipAndCanadianProvinceAndPostalCode,8,PASS
+AgencyAddressTest,testUKUsesPostTownAndCountriesWithoutPostalCodesIgnoreStaleValues,5,PASS
+AgencyAddressTest,testRequiredAddressPartsAndCountryPostalAndStateChecks,4,PASS
+AgencyAddressTest,testAddressIsIncludedOnlyInOptedInInvoiceSnapshot,3,PASS
+AgencyContactTest,testCountrySpecificNationalNumbersAndInternationalOverrides,5,PASS
+AgencyContactTest,testOnlyOfficialEmailIsRequiredAndUnusedNumbersAreDiscarded,5,PASS
+AgencyContactTest,testBusinessNumberCanBeUsedForMobileAndContactWithoutDuplicateEntry,5,PASS
+AgencyContactTest,testSeparateMobileAndContactCanBeAddedWithoutABusinessNumber,3,PASS
+AgencyContactTest,testSelectedPhoneIsRequiredAndBusinessLandlineCannotBeDeclaredMobile,4,PASS
+AgencyContactTest,testInvalidEmailPhoneExtensionAndLandlineMobileAreRejected,4,PASS
+AgencyContactTest,testCountryHintsAndSnapshotContainCorrespondenceFields,4,PASS
+FormCatalogTest,testStandardChoicesDoNotConflateJobsWithAccessRoles,7,PASS
+FormCatalogTest,testLocationsUseNamesAndEnforceTheParentHierarchy,11,PASS
+HealthTest,testIsDefinedAppPath,1,PASS
+HealthTest,testBaseUrlHasBeenSet,2,PASS
+MobileAuthTest,testMobileAndEnrollmentPathsBypassSharedPageCache,6,PASS
+MobileAuthTest,testPlainHttpIsRejected,2,PASS
+MobileAuthTest,testBrowserCookiesCannotAuthenticateMobileRequests,2,PASS
+MobileAuthTest,testMissingAndMalformedAuthorizationAreRejected,12,PASS
+MobileTestDeviceTest,testSimulatorIsUnavailableOutsideDevelopment,2,PASS
+StripeWebhookSignatureTest,testSignatureRejectsTamperingAndReplay,4,PASS
+SubscriptionInvoicePdfTest,testAllModuleScopePaginatesAndPreservesSavedDescription,7,PASS
+SubscriptionInvoicePdfTest,testPreviouslyIssuedInvoicesGainDescriptionsWithoutChangingAmounts,3,PASS
+SubscriptionPricingTest,testDependenciesAndLowestPackageWithAddons,7,PASS
+SubscriptionPricingTest,testWorkerCountCannotBeInvalid,5,PASS
+SubscriptionQuoteTest,testSelectedOptionsAreNormalized,1,PASS
+SubscriptionQuoteTest,testUnlistedAndFreeTextOptionsAreRejected,6,PASS
+SurfaceGateTest,testHostSurfacesAreMutuallyExclusive,12,PASS
+SurfaceGateTest,testEncodedAndTraversalAliasesAreRejected,5,PASS
+SurfaceGateTest,testPairingCodeNormalization,2,PASS

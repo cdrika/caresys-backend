@@ -1,0 +1,4 @@
+<?php $notifications=(new \App\Services\NotificationService($w))->inbox(); ?>
+<details class="notification-menu" data-notification-menu><summary aria-label="Notifications, <?= (int)$notifications['unread'] ?> unread"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg><span>Notifications</span><span class="notification-count" aria-live="polite" data-notification-count<?= $notifications['unread']?'':' hidden' ?>><?= $notifications['unread']>99?'99+':$notifications['unread'] ?></span></summary>
+<div class="notification-panel"><h2>Notifications</h2><div data-notification-items><?= view('components/notification_items',$notifications) ?></div><a class="notification-all" href="/app/notifications">View all notifications</a></div></details>
+<script src="/assets/notifications.js" defer></script>

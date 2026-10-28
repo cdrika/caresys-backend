@@ -16,3 +16,5 @@ document.querySelectorAll('form[data-form-action="subscription_request"]').forEa
   boxes.forEach(box=>box.addEventListener('change',sync));
   sync();
 });
+
+if(/^#agency-[a-f0-9]{32}$/.test(location.hash)){const review=document.getElementById(location.hash.slice(1));if(review instanceof HTMLDetailsElement)review.open=true;}

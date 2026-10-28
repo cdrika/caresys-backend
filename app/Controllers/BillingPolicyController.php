@@ -12,7 +12,7 @@ class BillingPolicyController extends BaseController
     }
     public function index()
     {
-        try{$w=$this->operator();$policy=$w->db->table('cs_billing_policy')->where('id',1)->get()->getRowArray();return $this->response->setHeader('Cache-Control','no-store')->setBody(view('caresys/billing_policy',compact('policy')));}
+        try{$w=$this->operator();$policy=$w->db->table('cs_billing_policy')->where('id',1)->get()->getRowArray();return $this->response->setHeader('Cache-Control','no-store')->setBody(view('caresys/billing_policy',compact('policy','w')));}
         catch(DomainError $e){return $this->response->setStatusCode($e->status)->setBody(view('caresys/error',['message'=>$e->getMessage(),'status'=>$e->status]));}
     }
     public function save()

@@ -1,0 +1,22 @@
+
+Warning: Failed loading Zend extension 'xdebug' (tried: C:\xampp\php\ext\xdebug (The specified module could not be found), C:\xampp\php\ext\php_xdebug.dll (The specified module could not be found)) in Unknown on line 0
+PHPUnit 10.5.66 by Sebastian Bergmann and contributors.
+
+Runtime:       PHP 8.2.12
+Configuration: C:\xampp\htdocs\CareSys\phpunit.dist.xml
+
+
+Seeded: App\Database\Seeds\DemoSeeder
+............Seeded: App\Database\Seeds\DemoSeeder
+.......................Seeded: App\Database\Seeds\DemoSeeder
+...Seeded: App\Database\Seeds\DemoSeeder
+.........................  63 / 254 ( 24%)
+............................................................... 126 / 254 ( 49%)
+............................................................... 189 / 254 ( 74%)
+.........................Seeded: App\Database\Seeds\DemoSeeder
+...................................... 252 / 254 ( 99%)
+..                                                              254 / 254 (100%)
+
+Time: 00:12.201, Memory: 66.00 MB
+
+OK (254 tests, 1411 assertions)

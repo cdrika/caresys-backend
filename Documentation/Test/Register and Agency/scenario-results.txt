@@ -1,0 +1,297 @@
+Agency Address
+ [x] Opt out discards all address values
+ [x] U s state and zip and canadian province and postal code
+ [x] U k uses post town and countries without postal codes ignore stale values
+ [x] Required address parts and country postal and state checks
+ [x] Address is included only in opted in invoice snapshot
+
+Agency Contact
+ [x] Country specific national numbers and international overrides
+ [x] Only official email is required and unused numbers are discarded
+ [x] Business number can be used for mobile and contact without duplicate entry
+ [x] Separate mobile and contact can be added without a business number
+ [x] Selected phone is required and business landline cannot be declared mobile
+ [x] Invalid email phone extension and landline mobile are rejected
+ [x] Country hints and snapshot contain correspondence fields
+
+Agency Contact Registration
+ [x] Registration persists normalized contacts and invoice keeps its snapshot
+ [x] Registration can omit all phone numbers
+ [x] Invalid contact does not create agency or membership
+
+Agency Registration Notification
+ [x] Registration cases with data set "minimal no optional details"
+ [x] Registration cases with data set "normalized country currency"
+ [x] Registration cases with data set "business registration supplied"
+ [x] Registration cases with data set "business reused for both roles"
+ [x] Registration cases with data set "UK landline shared as contact"
+ [x] Registration cases with data set "separate Australian mobile"
+ [x] Registration cases with data set "separate contact only"
+ [x] Registration cases with data set "three different numbers"
+ [x] Registration cases with data set "disabled optional values discarded"
+ [x] Registration cases with data set "US address"
+ [x] Registration cases with data set "Canadian address"
+ [x] Registration cases with data set "UK address optional county"
+ [x] Registration cases with data set "UAE address no postal code"
+ [x] Registration cases with data set "missing name"
+ [x] Registration cases with data set "overlong name"
+ [x] Registration cases with data set "missing official email"
+ [x] Registration cases with data set "malformed official email"
+ [x] Registration cases with data set "country wrong length"
+ [x] Registration cases with data set "unknown country"
+ [x] Registration cases with data set "currency invalid format"
+ [x] Registration cases with data set "currency wrong length"
+ [x] Registration cases with data set "timezone invalid"
+ [x] Registration cases with data set "selected business missing"
+ [x] Registration cases with data set "selected business invalid"
+ [x] Registration cases with data set "selected mobile missing"
+ [x] Registration cases with data set "selected contact missing"
+ [x] Registration cases with data set "landline cannot be mobile"
+ [x] Registration cases with data set "address missing street"
+ [x] Registration cases with data set "address missing city"
+ [x] Registration cases with data set "address state invalid"
+ [x] Registration cases with data set "address zip invalid"
+ [x] Registration cases with data set "registration number too long"
+ [x] Registration cases with data set "malformed retry key"
+ [x] All optional registration combinations with data set "phone flags 0 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 0 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 0 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 0 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 1 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 1 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 1 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 1 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 2 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 2 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 2 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 2 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 3 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 3 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 3 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 3 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 4 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 4 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 4 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 4 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 5 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 5 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 5 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 5 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 6 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 6 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 6 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 6 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 7 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 7 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 7 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 7 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 8 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 8 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 8 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 8 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 9 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 9 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 9 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 9 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 10 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 10 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 10 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 10 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 11 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 11 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 11 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 11 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 12 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 12 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 12 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 12 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 13 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 13 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 13 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 13 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 14 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 14 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 14 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 14 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 15 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 15 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 15 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 15 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 16 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 16 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 16 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 16 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 17 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 17 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 17 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 17 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 18 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 18 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 18 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 18 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 19 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 19 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 19 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 19 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 20 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 20 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 20 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 20 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 21 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 21 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 21 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 21 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 22 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 22 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 22 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 22 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 23 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 23 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 23 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 23 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 24 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 24 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 24 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 24 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 25 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 25 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 25 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 25 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 26 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 26 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 26 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 26 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 27 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 27 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 27 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 27 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 28 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 28 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 28 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 28 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 29 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 29 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 29 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 29 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 30 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 30 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 30 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 30 address 1 registration 1"
+ [x] All optional registration combinations with data set "phone flags 31 address 0 registration 0"
+ [x] All optional registration combinations with data set "phone flags 31 address 0 registration 1"
+ [x] All optional registration combinations with data set "phone flags 31 address 1 registration 0"
+ [x] All optional registration combinations with data set "phone flags 31 address 1 registration 1"
+ [x] Platform alert and owner receipt are private and linked to review
+ [x] Approval rejection suspension and reapproval notify owner without starting trial
+ [x] Unauthorized invalid and stale approval do not change state or send alerts
+ [x] Registration retry is idempotent and changed payload is rejected
+ [x] Read state is recipient scoped and idempotent
+ [x] Role revocation hides notifications and empty inbox renders
+ [x] No active operators does not invent recipient and owner still gets receipt
+ [x] All active operators and owners receive their own alerts
+ [x] Inactive operator is not sent registration alert
+ [x] Notification failure rolls back registration and approval
+ [x] Retry key is scoped to the registering account
+ [x] Revoked platform role cannot approve using stale workspace
+ [x] Disabled account cannot register using stale workspace
+ [x] Notification creation and read times are stored in utc
+ [x] Markup in agency name is escaped in menu
+
+Agency Trial
+ [x] Card required and trial boundary uses policy snapshot
+ [x] Verified payment unlocks once and renewal needs another approval
+
+Asset Race
+ [x] Two independent mysql transactions produce one custodian
+
+Database Access
+ [x] Application uses its own schema without global or ddl privileges
+ [x] Test connection is isolated on actual mysql
+
+Example Database
+ [x] Model find all
+ [x] Soft delete leaves row
+
+Example Session
+ [x] Session simple
+
+Form Catalog
+ [x] Standard choices do not conflate jobs with access roles
+ [x] Locations use names and enforce the parent hierarchy
+
+Health
+ [x] Is defined app path
+ [x] Base url has been set
+
+Mobile Auth
+ [x] Mobile and enrollment paths bypass shared page cache
+ [x] Plain http is rejected
+ [x] Browser cookies cannot authenticate mobile requests
+ [x] Missing and malformed authorization are rejected
+
+Mobile Pairing
+ [x] Approval and one time redemption
+ [x] Expired and foreign secrets cannot be redeemed
+
+Mobile Test Device
+ [x] Simulator is unavailable outside development
+
+Multi Agency Scheduling
+ [x] Cross agency overlap is blocked and suggestions do not expose foreign records
+ [x] Caregiver approval atomically replaces shift and alerts prior agency
+ [x] Only the named caregiver can decide and approval requires password and confirmation
+ [x] Decline and expiry leave original shift intact
+ [x] Schedule changes and lost scheduling permission invalidate approval
+ [x] Qualification failure rolls back prior cancellations
+ [x] Approved leave and started shifts cannot be replaced
+ [x] Timezone checks use utc and touching shifts are allowed
+ [x] New leave after request prevents approval without cancelling original
+ [x] All conflicting shifts require one explicit decision and cross agency clock is blocked
+ [x] Two part time contracts can activate and offboarding preserves other agency
+ [x] Full time contract still requires policy review before concurrent employment
+
+Shift Race
+ [x] Different agency transactions cannot double book one person
+
+Stripe Webhook Signature
+ [x] Signature rejects tampering and replay
+
+Subscription Invoice Pdf
+ [x] All module scope paginates and preserves saved description
+ [x] Previously issued invoices gain descriptions without changing amounts
+
+Subscription Pricing
+ [x] Dependencies and lowest package with addons
+ [x] Worker count cannot be invalid
+
+Subscription Quote
+ [x] Selected options are normalized
+ [x] Unlisted and free text options are rejected
+
+Surface Gate
+ [x] Host surfaces are mutually exclusive
+ [x] Encoded and traversal aliases are rejected
+ [x] Pairing code normalization
+
+Workflow
+ [x] Quote selections are recorded without changing agency access
+ [x] Directory projection and pause are enforced
+ [x] Unverified and unentitled agencies cannot search
+ [x] Tenant and role boundaries
+ [x] History is version scoped recipient scoped and revocable
+ [x] Expired grant fails on next read
+ [x] Activation is mutual explicit and idempotent
+ [x] Future activation waits and withdrawal prevents activation
+ [x] New contract version invalidates both prior agreements
+ [x] Scheduling blocks overlaps and cross agency client
+ [x] Actual elapsed time uses utc and captured breaks
+ [x] Duplicate clock does not create additional work
+ [x] Leave approval and cancellation keep balance ledger
+ [x] Asset has only one custodian and retains return
+ [x] Payroll and billing cannot allocate sources twice
+ [x] Csv formula injection is escaped
+ [x] Expired qualification cannot be accepted or assigned
+ [x] Correction preserves original clock and requires time reapproval
+ [x] Credit retains invoice and prevents duplicate credit
+ [x] Career correction does not expand existing grant
+ [x] Guided profile selections save and location search matches hierarchy
