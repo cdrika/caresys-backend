@@ -103,3 +103,8 @@ For browser checks, start the existing local HTTPS web/API servers and provide t
 ## Scope and limits
 
 These are local tests of the implemented in-app workflow, not email/SMS/push delivery or production certification. Country examples cover US, Canada, UK and UAE; country formatting and phone metadata are exercised through the installed libraries. Postal validation checks format rather than deliverability. The optional-field checkbox combinations are exhaustive for the seven tested binary choices; arbitrary text inputs and every possible real-world business arrangement cannot be exhaustively enumerated. Inboxes show the most recent 100 eligible notifications and the menu shows the latest 10. With no active platform administrator, registration stays pending and the owner still receives a receipt; no recipient is invented. No existing pending registrations were retroactively notified. No real contact details, passwords, API keys or card information are included in this report.
+
+## Word report
+
+[Download the dated Word test status report](CareSys_Register_and_Agency_Test_Status_27_October_2026.docx). Includes test results, coverage, cleanup details and all nine screenshots.
+
