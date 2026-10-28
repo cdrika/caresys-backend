@@ -10,7 +10,8 @@ class AdministrationService
         return $this->w->transaction(function()use($d){
             $country=strtoupper(Workspace::text($d,'country',2));$currency=strtoupper(Workspace::text($d,'currency',3));$tz=Workspace::text($d,'timezone',64);
             if(!preg_match('/^[A-Z]{2}$/D',$country) || !preg_match('/^[A-Z]{3}$/D',$currency) || !in_array($tz,\DateTimeZone::listIdentifiers(),true)) throw new DomainError('Check country, currency and IANA timezone.');
-            $r=$this->w->insert('agencies',['name'=>Workspace::text($d,'name',180),'country'=>$country,'currency'=>$currency,'timezone'=>$tz,'modules'=>'[]']);
+            $contact=\App\Libraries\AgencyContact::validate($d,$country);
+            $r=$this->w->insert('agencies',['name'=>Workspace::text($d,'name',180),'country'=>$country,'currency'=>$currency,'timezone'=>$tz,'modules'=>'[]']+$contact);
             $this->w->insert('memberships',['agency_id'=>$r['id'],'user_id'=>$this->w->userId,'role'=>'owner']);
             $this->w->db->table('cs_agency_subscriptions')->insert(['agency_id'=>$r['id']]);
             $this->w->audit('agency.registered',$r['ref']);return $r;

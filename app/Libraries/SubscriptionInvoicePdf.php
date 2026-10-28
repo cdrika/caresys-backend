@@ -60,7 +60,12 @@ final class SubscriptionInvoicePdf
         $this->number=$invoice['invoice_no'];$this->page();
         $this->text('PREPARED FOR',42,$this->y,9,true,'0.35 0.43 0.46');$this->y-=22;
         $this->paragraph($s['agency']['name'],14,true,56);
-        $this->paragraph('Country: '.$s['agency']['country']);$this->y-=12;
+        $this->paragraph('Country: '.$s['agency']['country']);
+        foreach(['official_email'=>'Official email','business_phone'=>'Phone','contact_number'=>'Contact','mobile_number'=>'Mobile','business_registration_number'=>'Business registration'] as $key=>$label){
+            $value=$s['agency'][$key]??'';if($value==='')continue;
+            if(in_array($key,['business_phone','contact_number','mobile_number'],true))$value=AgencyContact::display($value);
+            $this->paragraph($label.': '.$value,9);
+        }$this->y-=12;
         $this->paragraph('Issued: '.$s['issued_at'].' UTC    |    Price valid through: '.$s['valid_until']);
         $this->paragraph('Plan: '.$s['package_label'].'    |    Workers covered: '.$s['worker_count']);
         $this->paragraph('Billing basis: monthly    |    Currency: USD');$this->y-=18;

@@ -35,6 +35,12 @@ class FormCatalog
     public static function help(string $action,string $key,string $label):array
     {
         $specific=[
+            'agency.name'=>['Use the legal business name that should appear on invoices and agency correspondence.','Home Care Agency Ltd'],
+            'agency.official_email'=>['Use the official business email shown on invoices and correspondence. This does not change your personal sign-in email.','office@example.com'],
+            'agency.business_phone'=>['Enter the main business phone using the selected country format, or include + and an international country code.','Use the country example shown below the field.'],
+            'agency.contact_number'=>['Enter the business contact number for agency enquiries. Use an international country code if it belongs to another country.','Use the country example shown below the field.'],
+            'agency.mobile_number'=>['Enter a mobile-capable contact number using the selected country format or an international country code.','Use the mobile example shown below the field.'],
+            'agency.business_registration_number'=>['Enter the business registration identifier issued to your agency, if applicable. This field is optional.','BR-2026-001234'],
             'profile.role'=>['Your main caregiving job or the kind of role you want. Choose a common role or select Other to enter your own.','Caregiver or Personal care assistant'],
             'profile.summary'=>['A short introduction for recruiting agencies. Describe your relevant experience and the support you can offer. Do not include a client name, private health information or your home address.','I have five years of home care experience and enjoy helping older adults with daily routines.'],
             'profile.skills'=>['Select the tasks you can confidently perform. You can select several skills and add your own. Some tasks require separate training or authorization.','Personal care, Meal preparation, Mobility support'],

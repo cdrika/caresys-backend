@@ -23,7 +23,7 @@ if(!in_array($action,['profile','career','contract'],true))unset($labels['role']
     $helpButton='<button type="button" class="field-help" aria-label="Help with '.esc($label,'attr').'" aria-haspopup="dialog" data-help-title="'.esc($label,'attr').'" data-help-text="'.esc($explain,'attr').'" data-help-example="'.esc($example,'attr').'">?</button>';
     if($type==='checkbox'): ?><div class="consent-field"><label class="check"><input name="<?= esc($key,'attr') ?>" type="checkbox" value="yes"<?= $required ?>><?= esc($label) ?></label><?= $helpButton ?></div><?php continue;endif ?>
 <div class="field<?= $wide?' wide':'' ?>" data-field="<?= esc($key,'attr') ?>">
-<div class="field-label"><label for="<?= $id ?>"><?= esc($label) ?><?php if($optional): ?><span class="optional-label">Optional</span><?php endif ?></label><?= $helpButton ?></div>
+<div class="field-label"><label for="<?= $id ?>"><?= esc($label) ?><?php if($action==='agency'&&!$optional): ?><span class="required-mark" aria-hidden="true"> *</span><?php endif ?><?php if($optional): ?><span class="optional-label">Optional</span><?php endif ?></label><?= $helpButton ?></div>
 <?php if($type==='select'): ?>
 <select id="<?= $id ?>" name="<?= esc($key,'attr') ?>"<?= $required ?>><option value="">Choose an option…</option><?php if($value!==''&&!array_key_exists($value,$choices)): ?><option value="<?= esc($value,'attr') ?>" selected><?= esc($value) ?></option><?php endif;foreach($choices as $k=>$v): ?><option value="<?= esc((string)$k,'attr') ?>"<?= $value===(string)$k?' selected':'' ?>><?= esc((string)$v) ?></option><?php endforeach ?></select>
 <?php elseif($type==='choice'): ?>

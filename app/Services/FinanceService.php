@@ -45,7 +45,7 @@ class FinanceService
             $total='0.0000';$lines=[];
             foreach($rows as $r) {$amount=bcdiv(bcmul((string)$r['seconds'],$rate,8),'3600',4);if(bccomp($amount,'0',4)<=0) continue;$lines[]=$r+['amount'=>$amount];$total=bcadd($total,$amount,4);}
             if(!$lines) throw new DomainError('Billable quantities total zero.',409);
-            $invoice=$this->w->insert('invoices',['agency_id'=>$client['agency_id'],'client_id'=>$client['id'],'invoice_no'=>Workspace::text($d,'invoice_no',60),'total'=>$total,'currency'=>$this->w->agency['currency'],'due_date'=>Workspace::date($d['due_date']??'')]);
+            $invoice=$this->w->insert('invoices',['agency_id'=>$client['agency_id'],'client_id'=>$client['id'],'agency_contact'=>json_encode(\App\Libraries\AgencyContact::snapshot($this->w->agency),JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR),'invoice_no'=>Workspace::text($d,'invoice_no',60),'total'=>$total,'currency'=>$this->w->agency['currency'],'due_date'=>Workspace::date($d['due_date']??'')]);
             foreach($lines as $line) $this->w->insert('invoice_lines',['agency_id'=>$client['agency_id'],'invoice_id'=>$invoice['id'],'visit_id'=>$line['visit_id'],'seconds'=>$line['seconds'],'hourly_rate'=>$rate,'amount'=>$line['amount']]);
             $this->w->audit('invoice.issued',$invoice['ref'],null,'Agreed charge-rate snapshot; whole visit quantities');return $invoice;
         });

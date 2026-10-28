@@ -30,6 +30,7 @@ class EmploymentService
             foreach(['role'=>100,'work_area'=>160,'work_type'=>40,'pay_basis'=>80,'hours_terms'=>200,'terms'=>12000] as $field=>$max) $v[$field]=Workspace::text($d,$field,$max);
             $v['start_date']=Workspace::date($d['start_date']??'');
             $expiry=Workspace::date($d['expiry_date']??'');if($expiry<gmdate('Y-m-d')) throw new DomainError('Offer expiry must be today or later.');
+            $v['agency_contact']=json_encode(\App\Libraries\AgencyContact::snapshot($this->w->agency),JSON_UNESCAPED_UNICODE|JSON_THROW_ON_ERROR);
             $v['expires_at']=$expiry.' 23:59:59';$v['digest']=hash('sha256',json_encode($v,JSON_UNESCAPED_UNICODE));
             $r=$this->w->insert('contracts',$v);$this->w->update('applications',$app,['stage'=>'offer_issued']);
             $this->w->insert('joining',['agency_id'=>$v['agency_id'],'person_id'=>$v['person_id'],'contract_id'=>$r['id']]);

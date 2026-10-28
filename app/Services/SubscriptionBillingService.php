@@ -26,7 +26,7 @@ class SubscriptionBillingService
             if($selection['worker_count']<$active)throw new DomainError('Choose a worker count covering at least your '.$active.' active workers.');
             $snapshot=SubscriptionPricing::calculate($selection);
             $snapshot['module_details']=array_map(static fn($key)=>['key'=>$key,'label'=>SubscriptionQuote::MODULES[$key],'description'=>SubscriptionQuote::DESCRIPTIONS[$key]],$snapshot['effective_modules']);
-            $snapshot['agency']=['ref'=>$this->w->agency['ref'],'name'=>$this->w->agency['name'],'country'=>$this->w->agency['country']];
+            $snapshot['agency']=\App\Libraries\AgencyContact::snapshot($this->w->agency);
             $snapshot['issued_at']=gmdate('Y-m-d H:i:s');
             $snapshot['valid_until']=gmdate('Y-m-d',time()+30*86400);
             $ref=bin2hex(random_bytes(16));

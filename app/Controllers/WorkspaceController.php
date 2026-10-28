@@ -149,7 +149,7 @@ class WorkspaceController extends BaseController
                 'expense'=>['employment_ref','amount','category','incurred_on','description'],'expense_decision'=>['ref','version','decision','payment_evidence'],
                 'employee_mapping'=>['ref','version','provider_ref'],'payroll'=>['period_start','period_end'],
                 'invoice'=>['client_ref','hourly_rate','invoice_no','due_date','confirm'],'receipt'=>['ref','version','amount','evidence'],
-                'agency'=>['name','country','currency','timezone'],'member'=>['email','role'],'verify_agency'=>['ref','version','verification','basis'],
+                'agency'=>['name','country','currency','timezone','official_email','business_phone','contact_number','mobile_number','business_registration_number'],'member'=>['email','role'],'verify_agency'=>['ref','version','verification','basis'],
                 'dispute_resolution'=>['ref','version','state','resolution'],'subscription_request'=>['modules','service_level','worker_count','request_key'],
                 'qualification'=>['name','issuer','issued_on','expires_on','evidence_ref'],'accept_qualification'=>['employment_ref','qualification_ref','evidence'],
                 'balance'=>['employment_ref','minutes','reason'],'correction'=>['ref','proposed_seconds','reason'],'correction_decision'=>['ref','version','decision'],'acknowledge'=>['ref','version'],'credit'=>['ref','version','reason'],
