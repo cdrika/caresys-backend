@@ -13,7 +13,7 @@
   for(const kind of ['mobile','contact']){
    const same=business&&sharing[kind].checked,choice=form.querySelector(`[name="include_${kind}_number"]`),separate=form.querySelector(`[data-phone-separate="${kind}"]`),panel=form.querySelector(`[data-phone-panel="${kind}"]`);
    separate.hidden=same;choice.disabled=same;panel.hidden=same||!choice.checked;panel.disabled=same||!choice.checked;
-   choice.setAttribute('aria-expanded',String(!panel.hidden));form.querySelector(`[data-phone-different="${kind}"]`).textContent=business?'different ':'';
+   choice.setAttribute('aria-expanded',String(!panel.hidden));form.querySelector(`[data-phone-add-label="${kind}"]`).textContent=`Add a ${business?'different ':''}${kind} number`;
    if(same)used.push(kind);
   }
   form.querySelector('[data-phone-summary]').textContent=used.length?'Your business number will also be used as your '+used.join(' and ')+' number.':'';

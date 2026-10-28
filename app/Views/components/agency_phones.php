@@ -14,10 +14,10 @@ $phoneInput=static function(string $name,string $label)use($safe){$value=is_scal
 <label class="check"><input type="checkbox" name="business_is_contact" value="yes" data-phone-choice<?= $sameContact?' checked':'' ?>> This is also my contact number</label>
 </fieldset>
 <div data-phone-separate="mobile"<?= $sameMobile?' hidden':'' ?>>
-<label class="check"><input type="checkbox" name="include_mobile_number" value="yes" data-phone-choice aria-controls="agency-mobile-phone"<?= $chosen('include_mobile_number')?' checked':'' ?>> Add a <span data-phone-different="mobile"></span>mobile number</label>
+<label class="check"><input type="checkbox" name="include_mobile_number" value="yes" data-phone-choice aria-controls="agency-mobile-phone"<?= $chosen('include_mobile_number')?' checked':'' ?>><span data-phone-add-label="mobile">Add a mobile number</span></label>
 <fieldset id="agency-mobile-phone" data-phone-panel="mobile"<?= !$sameMobile&&$chosen('include_mobile_number')?'':' hidden disabled' ?>><legend>Mobile number</legend><?php $phoneInput('mobile_number','Mobile number'); ?></fieldset></div>
 <div data-phone-separate="contact"<?= $sameContact?' hidden':'' ?>>
-<label class="check"><input type="checkbox" name="include_contact_number" value="yes" data-phone-choice aria-controls="agency-contact-phone"<?= $chosen('include_contact_number')?' checked':'' ?>> Add a <span data-phone-different="contact"></span>contact number</label>
+<label class="check"><input type="checkbox" name="include_contact_number" value="yes" data-phone-choice aria-controls="agency-contact-phone"<?= $chosen('include_contact_number')?' checked':'' ?>><span data-phone-add-label="contact">Add a contact number</span></label>
 <fieldset id="agency-contact-phone" data-phone-panel="contact"<?= !$sameContact&&$chosen('include_contact_number')?'':' hidden disabled' ?>><legend>Contact number</legend><?php $phoneInput('contact_number','Contact number'); ?></fieldset></div>
 <p class="field-hint" data-phone-summary role="status"></p>
 </div>
