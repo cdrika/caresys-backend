@@ -13,7 +13,7 @@ final class AgencyContactRegistrationTest extends CIUnitTestCase
     }
     protected function setUp(): void{parent::setUp();$this->database=db_connect('tests');$this->database->transException(true)->transBegin();}
     protected function tearDown(): void{$this->database->transRollback();parent::tearDown();}
-    private function details(): array{return ['name'=>'Contact Test Agency','country'=>'US','currency'=>'USD','timezone'=>'America/Los_Angeles','official_email'=>'office@example.invalid','business_phone'=>'2025550123','contact_number'=>'2025550124','mobile_number'=>'2025550125','business_registration_number'=>'BR-TEST-100'];}
+    private function details(): array{return ['name'=>'Contact Test Agency','country'=>'US','currency'=>'USD','timezone'=>'America/Los_Angeles','official_email'=>'office@example.invalid','include_business_phone'=>'yes','include_mobile_number'=>'yes','include_contact_number'=>'yes','business_phone'=>'2025550123','contact_number'=>'2025550124','mobile_number'=>'2025550125','business_registration_number'=>'BR-TEST-100'];}
     public function testRegistrationPersistsNormalizedContactsAndInvoiceKeepsItsSnapshot(): void
     {
         $user=$this->database->table('users')->where('username','candidate')->get()->getRow();$w=new Workspace((int)$user->id,null,$this->database);
@@ -25,6 +25,13 @@ final class AgencyContactRegistrationTest extends CIUnitTestCase
         $saved=json_decode($invoice['snapshot'],true);$this->assertSame('100 Example Street',$saved['agency']['address_line1']);$this->assertSame('1',$saved['agency']['address_enabled']);$this->assertSame('BR-TEST-100',$saved['agency']['business_registration_number']);
         $this->database->table('cs_agencies')->where('id',$agency['id'])->update(['official_email'=>'changed@example.invalid']);
         $pdf=SubscriptionInvoicePdf::render($invoice);$this->assertStringContainsString('office@example.invalid',$pdf);$this->assertStringContainsString('BR-TEST-100',$pdf);$this->assertStringNotContainsString('changed@example.invalid',$pdf);
+    }
+    public function testRegistrationCanOmitAllPhoneNumbers(): void
+    {
+        $user=$this->database->table('users')->where('username','candidate')->get()->getRow();$w=new Workspace((int)$user->id,null,$this->database);$data=$this->details();
+        unset($data['include_business_phone'],$data['include_mobile_number'],$data['include_contact_number']);
+        $agency=(new AdministrationService($w))->agency($data);
+        foreach(['business_phone','mobile_number','contact_number'] as $field)$this->assertSame('',$agency[$field]);
     }
     public function testInvalidContactDoesNotCreateAgencyOrMembership(): void
     {

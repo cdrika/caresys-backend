@@ -12,11 +12,32 @@ final class AgencyContactTest extends CIUnitTestCase
         $this->assertSame('+442079460018',AgencyContact::phone('+44 20 7946 0018','US'));
         $this->assertSame('+44 20 7946 0018',AgencyContact::display('+442079460018'));
     }
-    public function testRegistrationNumberOptionalButEmailAndAllNumbersRequired(): void
+    public function testOnlyOfficialEmailIsRequiredAndUnusedNumbersAreDiscarded(): void
     {
-        $d=['official_email'=>'office@example.invalid','business_phone'=>'2025550123','contact_number'=>'2025550124','mobile_number'=>'2025550125'];
+        $d=['official_email'=>'office@example.invalid','business_phone'=>'invalid hidden value','mobile_number'=>'invalid hidden value','contact_number'=>'invalid hidden value'];
         $result=AgencyContact::validate($d,'US');$this->assertSame('',$result['business_registration_number']);
-        foreach(['official_email','business_phone','contact_number','mobile_number'] as $field){$invalid=$d;unset($invalid[$field]);try{AgencyContact::validate($invalid,'US');$this->fail('Missing field accepted');}catch(DomainError $e){$this->assertSame(422,$e->status);}}
+        foreach(['business_phone','mobile_number','contact_number'] as $key)$this->assertSame('',$result[$key]);
+        try{AgencyContact::validate([],'US');$this->fail('Missing official email accepted');}catch(DomainError $e){$this->assertSame(422,$e->status);}
+    }
+    public function testBusinessNumberCanBeUsedForMobileAndContactWithoutDuplicateEntry(): void
+    {
+        $d=['official_email'=>'office@example.invalid','include_business_phone'=>'yes','business_phone'=>'2025550123','business_is_mobile'=>'yes','business_is_contact'=>'yes','mobile_number'=>'bad ignored value','contact_number'=>'bad ignored value'];
+        $result=AgencyContact::validate($d,'US');$this->assertSame('+12025550123',$result['business_phone']);$this->assertSame($result['business_phone'],$result['mobile_number']);$this->assertSame($result['business_phone'],$result['contact_number']);
+        unset($d['include_business_phone']);$result=AgencyContact::validate($d,'US');$this->assertSame('',$result['mobile_number']);$this->assertSame('',$result['contact_number']);
+    }
+    public function testSeparateMobileAndContactCanBeAddedWithoutABusinessNumber(): void
+    {
+        $result=AgencyContact::validate(['official_email'=>'office@example.invalid','include_mobile_number'=>'yes','mobile_number'=>'0412 345 678','include_contact_number'=>'yes','contact_number'=>'02 9374 4000'],'AU');
+        $this->assertSame('',$result['business_phone']);$this->assertSame('+61412345678',$result['mobile_number']);$this->assertSame('+61293744000',$result['contact_number']);
+    }
+    public function testSelectedPhoneIsRequiredAndBusinessLandlineCannotBeDeclaredMobile(): void
+    {
+        foreach([
+            ['include_business_phone'=>'yes'],
+            ['include_mobile_number'=>'yes'],
+            ['include_contact_number'=>'yes'],
+            ['include_business_phone'=>'yes','business_phone'=>'020 7946 0018','business_is_mobile'=>'yes'],
+        ] as $d){try{AgencyContact::validate(['official_email'=>'office@example.invalid']+$d,'GB');$this->fail('Invalid selected number accepted');}catch(DomainError $e){$this->assertSame(422,$e->status);}}
     }
     public function testInvalidEmailPhoneExtensionAndLandlineMobileAreRejected(): void
     {

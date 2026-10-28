@@ -4,6 +4,21 @@
  const source=document.getElementById('agency-phone-hints');if(!form||!source)return;
  const hints=JSON.parse(source.textContent),country=form.querySelector('[name="country"]');
  const fields=['business_phone','contact_number','mobile_number'];
+ const businessChoice=form.querySelector('[name="include_business_phone"]');
+ const sharing={mobile:form.querySelector('[name="business_is_mobile"]'),contact:form.querySelector('[name="business_is_contact"]')};
+ function syncPhones(){
+  const business=businessChoice.checked,businessPanel=form.querySelector('[data-phone-panel="business"]');
+  businessPanel.hidden=!business;businessPanel.disabled=!business;businessChoice.setAttribute('aria-expanded',String(business));
+  const used=[];
+  for(const kind of ['mobile','contact']){
+   const same=business&&sharing[kind].checked,choice=form.querySelector(`[name="include_${kind}_number"]`),separate=form.querySelector(`[data-phone-separate="${kind}"]`),panel=form.querySelector(`[data-phone-panel="${kind}"]`);
+   separate.hidden=same;choice.disabled=same;panel.hidden=same||!choice.checked;panel.disabled=same||!choice.checked;
+   choice.setAttribute('aria-expanded',String(!panel.hidden));form.querySelector(`[data-phone-different="${kind}"]`).textContent=business?'different ':'';
+   if(same)used.push(kind);
+  }
+  form.querySelector('[data-phone-summary]').textContent=used.length?'Your business number will also be used as your '+used.join(' and ')+' number.':'';
+ }
+ form.querySelectorAll('[data-phone-choice]').forEach(input=>input.addEventListener('change',syncPhones));syncPhones();
  fields.forEach(name=>{const input=form.querySelector(`[name="${name}"]`);input.autocomplete=name==='mobile_number'?'mobile tel':'work tel';const hint=document.createElement('p');hint.className='field-hint';hint.id=input.id+'-phone-format';input.setAttribute('aria-describedby',hint.id);input.after(hint);});
  function update(){const info=hints[country.value];fields.forEach(name=>{const input=form.querySelector(`[name="${name}"]`),example=info?.[name==='mobile_number'?'mobile':'phone']||'';input.placeholder=example||'+ country code and number';document.getElementById(input.id+'-phone-format').textContent=info?`Country code ${info.code}. Example: ${example}. Enter a national number or include + and a country code for an international number.`:'Include + and the international country code. A valid phone number is required.';});}
 

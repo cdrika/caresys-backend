@@ -19,10 +19,13 @@ final class AgencyContact
     {
         $email=Workspace::text($d,'official_email',254);
         if(!filter_var($email,FILTER_VALIDATE_EMAIL))throw new DomainError('Enter a valid official agency email address.');
-        return ['official_email'=>$email,
-            'business_phone'=>self::phone(Workspace::text($d,'business_phone',80),$country),
-            'contact_number'=>self::phone(Workspace::text($d,'contact_number',80),$country),
-            'mobile_number'=>self::phone(Workspace::text($d,'mobile_number',80),$country,true),
+        $business=($d['include_business_phone']??'')==='yes';
+        $sameMobile=$business&&($d['business_is_mobile']??'')==='yes';
+        $sameContact=$business&&($d['business_is_contact']??'')==='yes';
+        $businessNumber=$business?self::phone(Workspace::text($d,'business_phone',80),$country,$sameMobile):'';
+        return ['official_email'=>$email,'business_phone'=>$businessNumber,
+            'contact_number'=>$sameContact?$businessNumber:(($d['include_contact_number']??'')==='yes'?self::phone(Workspace::text($d,'contact_number',80),$country):''),
+            'mobile_number'=>$sameMobile?$businessNumber:(($d['include_mobile_number']??'')==='yes'?self::phone(Workspace::text($d,'mobile_number',80),$country,true):''),
             'business_registration_number'=>Workspace::text($d,'business_registration_number',100,false)];
     }
     public static function snapshot(array $agency): array

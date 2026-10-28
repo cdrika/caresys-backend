@@ -11,7 +11,7 @@ $owner=$db->table('users')->where('username','owner')->get()->getRowArray();
 $caregiver=$db->table('users')->where('username','caregiver')->get()->getRowArray();
 if(!$owner||!$caregiver)throw new RuntimeException('Synthetic demo actors required.');
 if($command==='create'){
-    $agency=(new \App\Services\AdministrationService(new \App\Services\Workspace((int)$owner['id'])))->agency(['name'=>'QA Trial '.bin2hex(random_bytes(6)),'country'=>'US','currency'=>'USD','timezone'=>'America/Los_Angeles','official_email'=>'trial@example.invalid','business_phone'=>'2025550123','contact_number'=>'2025550124','mobile_number'=>'2025550125']);
+    $agency=(new \App\Services\AdministrationService(new \App\Services\Workspace((int)$owner['id'])))->agency(['name'=>'QA Trial '.bin2hex(random_bytes(6)),'country'=>'US','currency'=>'USD','timezone'=>'America/Los_Angeles','official_email'=>'trial@example.invalid','include_business_phone'=>'yes','include_mobile_number'=>'yes','include_contact_number'=>'yes','business_phone'=>'2025550123','contact_number'=>'2025550124','mobile_number'=>'2025550125']);
     $db->table('cs_agencies')->where('id',$agency['id'])->update(['verification'=>'verified']);
     $db->table('cs_memberships')->insert(['ref'=>bin2hex(random_bytes(16)),'agency_id'=>$agency['id'],'user_id'=>$caregiver['id'],'role'=>'caregiver']);
     $tokens=[];foreach(['owner'=>$owner,'caregiver'=>$caregiver] as $key=>$user){$u=model(\CodeIgniter\Shield\Models\UserModel::class)->find($user['id']);$tokens[$key]=$u->generateAccessToken('mobile:QA Trial '.$agency['ref'],['mobile:v1'],\CodeIgniter\I18n\Time::now()->addSeconds(900))->raw_token;}

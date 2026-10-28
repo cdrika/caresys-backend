@@ -8,3 +8,5 @@
 .required-mark{color:#b42318;font-weight:700}
 
 .agency-address-section{grid-column:1/-1}.agency-address-section fieldset{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:10px}[data-address-field][hidden],[data-agency-address][hidden]{display:none!important}
+
+.agency-phone-section{grid-column:1/-1}.agency-phone-section fieldset{margin:12px 0 18px;padding:16px;border:1px solid var(--line);border-radius:10px}.agency-phone-section .check{margin:10px 0}[data-phone-panel][hidden],[data-phone-separate][hidden]{display:none!important}
