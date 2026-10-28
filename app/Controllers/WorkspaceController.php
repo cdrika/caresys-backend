@@ -38,7 +38,8 @@ class WorkspaceController extends BaseController
     private function personalData(Workspace $w,string $page,array &$d): void
     {
         $pid=$w->person['id'];
-        if(!in_array($page,['dashboard','profile','career','privacy','opportunities','offers','activity','agencies','platform'],true)) throw new DomainError('Page unavailable.',404);
+        if(!in_array($page,['dashboard','profile','career','privacy','opportunities','offers','activity','agencies','platform','shift_requests'],true)) throw new DomainError('Page unavailable.',404);
+        if($page==='shift_requests')$d['shift_requests']=(new \App\Services\ShiftPlanningService($w))->requests();
         $d['profile']=$w->db->table('cs_profiles')->where('person_id',$pid)->get()->getRowArray();
         $d['regions']=implode(', ',array_column($w->db->table('cs_profile_regions')->where('person_id',$pid)->get()->getResultArray(),'region'));
         $d['careers']=$w->db->table('cs_career')->where('person_id',$pid)->orderBy('id','DESC')->get()->getResultArray();
@@ -72,6 +73,10 @@ class WorkspaceController extends BaseController
         }
         $map=['recruitment'=>'recruitment','applications'=>'recruitment','history'=>'history','contracts'=>'employment','people'=>'people','clients'=>'care','schedule'=>'scheduling','time'=>'time','leave'=>'leave','care'=>'care','assets'=>'assets','expenses'=>'expenses','payroll'=>'payroll','finance'=>'finance','reports'=>'reporting','settings'=>'settings','today'=>'self'];
         if($page!=='dashboard') {if(!isset($map[$page])) throw new DomainError('Page unavailable.',404);$w->require($map[$page]);}
+        if($page==='schedule'){
+            $d['shift_requests']=$w->table('shift_changes')->select('ref,state,expires_at,visit_ref')->orderBy('id','DESC')->limit(50)->get()->getResultArray();
+            $d['coverage_alerts']=$w->table('audit')->select('record_ref,detail,created_at')->where('action','visit.replaced_by_caregiver')->orderBy('id','DESC')->limit(50)->get()->getResultArray();
+        }
         $canPeople=array_intersect(Workspace::ROLES[$w->membership['role']]??[],['people','scheduling','time','leave','care','assets','payroll','finance']);
         if($canPeople) $d['employees']=$w->db->table('cs_employments e')->select('e.*,p.name')->join('cs_people p','p.id=e.person_id')->where('e.agency_id',$w->agency['id'])->orderBy('p.name')->get()->getResultArray();
         if($page==='people')$d['qualifications']=$w->db->query('SELECT q.*,e.ref AS employment_ref,p.name AS employee_name FROM cs_qualifications q JOIN cs_employments e ON e.person_id=q.person_id JOIN cs_people p ON p.id=e.person_id WHERE e.agency_id=? AND e.state=\'active\'',[$w->agency['id']])->getResultArray();
@@ -136,7 +141,8 @@ class WorkspaceController extends BaseController
                 'contract'=>['application_ref','role','work_area','work_type','pay_basis','hours_terms','terms','start_date','expiry_date'],
                 'contract_decision'=>['ref','version','digest','decision','confirm','password'],'joining_decision'=>['ref','version','decision','confirm','password'],
                 'conditions'=>['ref','version','confirm','conditions_note'],'activate'=>['ref','version','request_key'],'offboard'=>['ref','version','end_date'],
-                'client'=>['name','location','contact','instructions'],'schedule'=>['employment_ref','client_ref','starts_at','ends_at','service','required_qualification'],
+                'client'=>['name','location','contact','instructions'],'schedule'=>['employment_ref','client_ref','starts_at','ends_at','service','required_qualification','mode'],
+                'shift_decision'=>['ref','version','decision','confirm','password'],
                 'visit_decision'=>['ref','version','state','reason'],'clock'=>['employment_ref','visit_ref','event_key','type'],
                 'approve_time'=>['ref','version','state'],'leave'=>['employment_ref','starts_at','ends_at','minutes','type'],'leave_decision'=>['ref','version','decision'],
                 'note'=>['visit_ref','body','kind','severity'],'asset'=>['tag','name'],'custody'=>['ref','version','decision','employment_ref','condition_note','maintenance'],
@@ -153,10 +159,21 @@ class WorkspaceController extends BaseController
             if(!isset($allowed[$action])) throw new DomainError('Action unavailable.',404);
             $unknown=array_diff(array_keys($d),array_merge($allowed[$action],['workspace_nonce','csrf_test_name','return_page']));
             if($unknown) throw new DomainError('Unsupported writable fields.',422);
-            $personal=['profile','visibility','career','invitation_decision','apply','history_decision','dispute','joining_decision','agency','verify_agency','dispute_resolution','qualification','entitlement'];
+            $personal=['profile','visibility','career','invitation_decision','apply','history_decision','dispute','joining_decision','agency','verify_agency','dispute_resolution','qualification','entitlement','shift_decision'];
             $agencyOnly=['invite','vacancy','history_request','contract','conditions','activate','offboard','client','schedule','visit_decision','clock','approve_time','leave','leave_decision','note','asset','custody','expense','expense_decision','employee_mapping','payroll','invoice','receipt','member','subscription_request','accept_qualification','balance','correction','correction_decision','acknowledge','credit'];
             if(($agencyRef && in_array($action,$personal,true)) || (!$agencyRef && in_array($action,$agencyOnly,true))) throw new DomainError('This action belongs in another workspace.',403);
             if(!service('throttler')->check('action_'.$w->userId,60,60)) throw new DomainError('Too many actions. Try again shortly.',429);
+            if($action==='shift_decision'){
+                (new \App\Services\ShiftPlanningService($w))->decide($d);
+                return redirect()->to('/app/shift_requests')->with('message','Your shift replacement decision was saved. Approved replacements notify the affected agencies to arrange coverage.');
+            }
+            if($action==='schedule'&&($d['mode']??'schedule')!=='schedule'){
+                $planning=new \App\Services\ShiftPlanningService($w);
+                if($d['mode']==='check')return redirect()->to($this->returnPath($agencyRef,$d))->with('availability',$planning->availability($d))->with('safe_input',array_diff_key($d,array_flip(['workspace_nonce','csrf_test_name'])));
+                if($d['mode']!=='request')throw new DomainError('Choose a scheduling action.');
+                $planning->request($d);
+                return redirect()->to($this->returnPath($agencyRef,$d))->with('message','Replacement requested. Ask the caregiver to review Personal account → Shift requests. No shift has changed.');
+            }
             $methodMap=['profile'=>'saveProfile','history_request'=>'requestHistory','history_decision'=>'historyDecision','invitation_decision'=>'invitationDecision','contract'=>'issue','contract_decision'=>'contractDecision','joining_decision'=>'joiningDecision','visit_decision'=>'visitDecision','approve_time'=>'approveTime','leave_decision'=>'leaveDecision','expense_decision'=>'expenseDecision','employee_mapping'=>'employeeMapping','verify_agency'=>'verifyAgency','dispute_resolution'=>'disputeResolution','subscription_request'=>'subscriptionRequest','correct_career'=>'correctCareer'];
             if(in_array($action,['profile','visibility','career','invite','invitation_decision','vacancy','apply','stage','history_request','history_decision','dispute','correct_career'],true)) $service=new RecruitmentService($w);
             elseif(in_array($action,['contract','contract_decision','joining_decision','conditions','activate','offboard'],true)) $service=new EmploymentService($w);

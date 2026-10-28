@@ -36,3 +36,16 @@ invoices. Versioned review routes include timesheets/{ref}/approve,
 leave-requests/{ref}/decision, assets/{ref}/custody, expenses/{ref}/decision,
 invoices/{ref}/receipt and invoices/{ref}/credit. These use the same explicit
 field allowlists and authorization services as their server-rendered forms.
+
+## Multi agency part time scheduling
+
+Separate agreed `part_time` employments can be active across agencies. Visit creation checks overlaps and approved leave across the person, without returning another agency's records. See `Documentation/Status_Reports/2026-10-27/CareSys_Multi_Agency_Shift_Workflow_27_October_2026.md`.
+
+| Method | Path under /api/v1 | Input / result |
+| --- | --- | --- |
+| POST | /agencies/{agency}/shift-availability | `employment_ref`, `client_ref`, `starts_at`, `ends_at`; returns availability flags and up to three local time suggestions. |
+| POST | /agencies/{agency}/shift-requests | Same fields plus `service` and optional `required_qualification`; returns request ref, version, state and expiry. Does not change visits. |
+| GET | /me/shift-requests | Only the actor's requests, proposed visit and their own prior shifts to replace. |
+| POST | /me/shift-requests/{reference}/decision | `version`, `decision` approve/decline; approval also needs `confirm=yes` and current `password`. Returns state and resulting visit ref. |
+
+Request times and suggested times use `YYYY-MM-DDTHH:mm` in the route agency timezone. Prior-shift times in the caregiver response and request expiry are UTC. These are scheduling gaps, not confirmed work-hour or travel availability. Shift length is limited to 24 hours and suggestions search seven days. All normal role, access, CSRF and workspace checks apply. Stale, expired, leave-blocked or started-shift replacements fail with no cancellations. A request expires within 24 hours or at its proposed start.

@@ -113,6 +113,10 @@ class Workspace
     public function transaction(callable $work)
     {
         $this->db->transException(true)->transBegin();
+        // CI's nested transactions only count depth. A savepoint also undoes a
+        // failed inner workflow when its caller keeps an outer transaction open.
+        $savepoint=$this->db->transDepth>1?'workflow_'.bin2hex(random_bytes(8)):null;
+        if($savepoint)$this->db->query('SAVEPOINT '.$savepoint);
         try {
             // Lock shared authorization roots first; membership changes use this order too.
             if ($this->agency) {
@@ -121,9 +125,13 @@ class Workspace
             }
             $result = $work();
             if (!$this->db->transStatus()) throw new DomainError('The transaction could not complete.',409);
+            if($savepoint)$this->db->query('RELEASE SAVEPOINT '.$savepoint);
             $this->db->transCommit();
             return $result;
-        } catch (\Throwable $e) { $this->db->transRollback(); throw $e; }
+        } catch (\Throwable $e) {
+            if($savepoint){try{$this->db->query('ROLLBACK TO SAVEPOINT '.$savepoint);$this->db->query('RELEASE SAVEPOINT '.$savepoint);}catch(\Throwable){/* A database-aborted transaction has no remaining savepoint. */}}
+            $this->db->transRollback();throw $e;
+        }
     }
 
     public function audit(string $action, ?string $ref = null, ?int $person = null, string $detail = ''): void

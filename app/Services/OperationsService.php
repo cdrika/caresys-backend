@@ -25,13 +25,13 @@ class OperationsService
     public function schedule(array $d): array
     {
         return $this->w->transaction(function()use($d){
-            $this->w->require('scheduling');$e=$this->w->employment($d['employment_ref']??'');$client=$this->w->record('clients',$d['client_ref']??'');
+            $this->w->require('scheduling');$planning=new ShiftPlanningService($this->w);$snapshot=$this->w->record('employments',$d['employment_ref']??'');$planning->lockPerson((int)$snapshot['person_id']);
+            $e=$this->w->employment($d['employment_ref']??'');$client=$this->w->record('clients',$d['client_ref']??'');
             $start=self::instant($d['starts_at']??'',$this->w->agency['timezone']);$end=self::instant($d['ends_at']??'',$this->w->agency['timezone']);
-            if($end<=$start) throw new DomainError('Visit end must follow its start. Overnight visits are allowed.');
-            if(substr($start,0,10)<$e['start_date']) throw new DomainError('Visit falls before employment starts.');
-            $overlap=$this->w->table('visits')->where('employment_id',$e['id'])->whereNotIn('state',['cancelled','no_show'])->where('starts_at <',$end)->where('ends_at >',$start)->countAllResults();
-            $leave=$this->w->table('leave')->where(['employment_id'=>$e['id'],'state'=>'approved'])->where('starts_at <',$end)->where('ends_at >',$start)->countAllResults();
-            if($overlap || $leave) throw new DomainError('The caregiver has overlapping work or approved leave.',409);
+            if($end<=$start||strtotime($end.' UTC')-strtotime($start.' UTC')>86400) throw new DomainError('Visit duration must be greater than zero and no longer than 24 hours. Overnight visits are allowed.');
+            if(substr($d['starts_at'],0,10)<$e['start_date']) throw new DomainError('Visit falls before employment starts.');
+            $overlap=$planning->conflicts((int)$e['person_id'],$start,$end);$leave=$planning->onLeave((int)$e['person_id'],$start,$end);
+            if($overlap || $leave) throw new DomainError('The caregiver is unavailable due to another shift or approved leave. Check availability for suggested times, or request caregiver approval to replace eligible future shifts. No shift has changed.',409);
             $qualification=Workspace::text($d,'required_qualification',160,false);
             if($qualification){$valid=$this->w->db->query('SELECT q.id FROM cs_qualification_acceptances a JOIN cs_qualifications q ON q.id=a.qualification_id WHERE a.agency_id=? AND a.employment_id=? AND q.person_id=? AND q.name=? AND (q.expires_on IS NULL OR q.expires_on>=?)',[$e['agency_id'],$e['id'],$e['person_id'],$qualification,substr($end,0,10)])->getRowArray();if(!$valid)throw new DomainError('This assignment requires a current agency-accepted qualification.',409);}
             $r=$this->w->insert('visits',['agency_id'=>$this->w->agency['id'],'client_id'=>$client['id'],'employment_id'=>$e['id'],'starts_at'=>$start,'ends_at'=>$end,'service'=>Workspace::text($d,'service',120),'required_qualification'=>$qualification]);
@@ -42,7 +42,7 @@ class OperationsService
     public function visitDecision(array $d): void
     {
         $this->w->transaction(function()use($d){
-            $this->w->require('scheduling');$v=$this->w->record('visits',$d['ref'],true);
+            $this->w->require('scheduling');$v=$this->w->record('visits',$d['ref']);$e=$this->w->table('employments')->where('id',$v['employment_id'])->get()->getRowArray();(new ShiftPlanningService($this->w))->lockPerson((int)$e['person_id']);$v=$this->w->record('visits',$d['ref'],true);
             if(!in_array($d['state']??'',['cancelled','no_show'],true)) throw new DomainError('Invalid visit outcome.');
             if(in_array($v['state'],['completed','cancelled','no_show'],true)) throw new DomainError('Visit outcome is already recorded.',409);
             $reason=Workspace::text($d,'reason',300);$this->w->update('visits',$v,['state'=>$d['state']],(int)$d['version']);
@@ -53,7 +53,7 @@ class OperationsService
     public function clock(array $d): array
     {
         return $this->w->transaction(function()use($d){
-            $this->w->require('self');$e=$this->w->employment($d['employment_ref']??'',true);$v=$this->w->record('visits',$d['visit_ref']??'',true);
+            $this->w->require('self');$snapshot=$this->w->record('employments',$d['employment_ref']??'');(new ShiftPlanningService($this->w))->lockPerson((int)$snapshot['person_id']);$e=$this->w->employment($d['employment_ref']??'',true);$v=$this->w->record('visits',$d['visit_ref']??'',true);
             if((int)$v['employment_id']!==(int)$e['id']) throw new DomainError('Assignment unavailable.',404);
             $key=Workspace::text($d,'event_key',64);$type=Workspace::text($d,'type',24);
             $existing=$this->w->table('clock')->where('event_key',$key)->get()->getRowArray();
@@ -67,7 +67,7 @@ class OperationsService
             $allowed=[ 'new'=>['in'], 'in'=>['break_start','out'], 'break_start'=>['break_end'], 'break_end'=>['break_start','out'], 'out'=>[] ];
             if(!in_array($type,$allowed[$last??'new']??[],true)) throw new DomainError('Invalid clock transition. Finish the current session or break first.',409);
             if($type==='in') {
-                $open=$this->w->table('visits')->where(['employment_id'=>$e['id'],'state'=>'in_progress'])->countAllResults();
+                $open=$this->w->db->query("SELECT v.id FROM cs_visits v JOIN cs_employments e ON e.id=v.employment_id WHERE e.person_id=? AND v.state='in_progress' LIMIT 1 FOR UPDATE",[$e['person_id']])->getRowArray();
                 if($open) throw new DomainError('Another work session is active.',409);
             }
             $now=gmdate('Y-m-d H:i:s');
@@ -122,6 +122,7 @@ class OperationsService
         $this->w->transaction(function()use($d){
             $r=$this->w->record('leave',$d['ref']);
             $e=$this->w->table('employments')->where('id',$r['employment_id'])->get()->getRowArray();
+            (new ShiftPlanningService($this->w))->lockPerson((int)$e['person_id']);
             $this->w->db->query('SELECT id FROM cs_employments WHERE id=? FOR UPDATE',[$e['id']]);
             $r=$this->w->record('leave',$d['ref'],true);$decision=$d['decision']??'';
             if($decision==='cancel_request') {

@@ -28,6 +28,10 @@ $routes->group('', ['filter'=>'session'], static function($routes) {
     $routes->get('agency/(:segment)/(:segment)','WorkspaceController::agency/$1/$2');
     $routes->post('agency/(:segment)/actions/(:segment)','WorkspaceController::agencyAction/$1/$2');
     $routes->get('api/v1/me/profile','ApiController::profile');
+    $routes->get('api/v1/me/shift-requests','ApiController::shiftRequests');
+    $routes->post('api/v1/me/shift-requests/(:segment)/decision','ApiController::decideShiftChange/$1');
+    $routes->post('api/v1/agencies/(:segment)/shift-availability','ApiController::shiftAvailability/$1');
+    $routes->post('api/v1/agencies/(:segment)/shift-requests','ApiController::requestShiftChange/$1');
     $routes->patch('api/v1/me/profile','ApiController::updateProfile');
     $routes->post('api/v1/me/profile/publish','ApiController::publish');
     $routes->get('api/v1/agencies/(:segment)/candidates','ApiController::candidates/$1');
@@ -62,6 +66,10 @@ $routes->group('mobile/v1', ['filter'=>'mobileAuth'], static function($routes) {
     $routes->post('agencies/(:segment)/billing/checkout/(:segment)','MobileBillingController::checkout/$1/$2');
     $routes->post('agencies/(:segment)/billing/checkouts/(:segment)/complete','MobileBillingController::complete/$1/$2');
     $routes->get('me/profile','MobileController::profile');
+    $routes->get('me/shift-requests','MobileController::shiftRequests');
+    $routes->post('me/shift-requests/(:segment)/decision','MobileController::decideShiftChange/$1');
+    $routes->post('agencies/(:segment)/shift-availability','MobileController::shiftAvailability/$1');
+    $routes->post('agencies/(:segment)/shift-requests','MobileController::requestShiftChange/$1');
     $routes->patch('me/profile','MobileController::updateProfile');
     $routes->post('me/profile/publish','MobileController::publish');
     $routes->get('agencies/(:segment)/candidates','MobileController::candidates/$1');

@@ -105,7 +105,11 @@ class EmploymentService
             if(!$signer || !in_array($signer['role'],['owner','recruiter'],true)) throw new DomainError('Agency signing authority requires review.',409);
             $today=(new \DateTimeImmutable('now',new \DateTimeZone($this->w->agency['timezone'])))->format('Y-m-d');
             if($c['start_date']>$today) throw new DomainError('Pending start: the agreed local start date has not arrived.',409);
-            if($this->w->db->table('cs_employments')->where(['person_id'=>$p['id'],'state'=>'active'])->countAllResults()) throw new DomainError('Overlapping employment requires policy review. Existing employment is preserved.',409);
+            $active=$this->w->db->query("SELECT e.agency_id,c.work_type FROM cs_employments e LEFT JOIN cs_joining j ON j.id=e.joining_id LEFT JOIN cs_contracts c ON c.id=j.contract_id WHERE e.person_id=? AND e.state='active' FOR UPDATE",[$p['id']])->getResultArray();
+            foreach($active as $prior){
+                if((int)$prior['agency_id']===(int)$j['agency_id'])throw new DomainError('This caregiver already has active employment with this agency.',409);
+                if($c['work_type']!=='part_time'||$prior['work_type']!=='part_time')throw new DomainError('Concurrent agency employment requires agreed part-time contracts for every active employment. Existing employment is preserved.',409);
+            }
             $e=$this->w->insert('employments',['agency_id'=>$j['agency_id'],'person_id'=>$p['id'],'joining_id'=>$j['id'],'employee_no'=>'EMP-'.strtoupper(substr($j['ref'],0,8)),'role'=>$c['role'],'start_date'=>$c['start_date']]);
             $member=$this->w->table('memberships')->where('user_id',$p['user_id'])->get()->getRowArray();
             if(!$member) $this->w->insert('memberships',['agency_id'=>$j['agency_id'],'user_id'=>$p['user_id'],'role'=>'caregiver']);
@@ -121,7 +125,7 @@ class EmploymentService
     public function offboard(array $d): void
     {
         $this->w->transaction(function()use($d){
-            $this->w->require('people');$e=$this->w->record('employments',$d['ref'],true);
+            $this->w->require('people');$e=$this->w->record('employments',$d['ref']);(new ShiftPlanningService($this->w))->lockPerson((int)$e['person_id']);$e=$this->w->record('employments',$d['ref'],true);
             $date=Workspace::date($d['end_date']??'');if($date<$e['start_date'] || $date>gmdate('Y-m-d')) throw new DomainError('Use an actual end date between employment start and today.');
             if($e['state']!=='active') throw new DomainError('Employment has already ended.',409);
             $this->w->update('employments',$e,['state'=>'ended','end_date'=>$date],(int)$d['version']);

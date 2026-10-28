@@ -34,6 +34,10 @@ See `app/Config/Routes.php` and `app/Controllers/ApiController.php` for the expl
 
 Responses use the existing `data`/`error` envelopes. Authentication errors are JSON, with no login redirect. Mobile responses are marked `no-store`; missing credentials return 401, invalid scopes return 403 and throttling returns 429 with Retry-After.
 
+## Part time scheduling services
+
+The same scheduling endpoints are available under the isolated `/mobile/v1` prefix: `POST /agencies/{agency}/shift-availability`, `POST /agencies/{agency}/shift-requests`, `GET /me/shift-requests`, and `POST /me/shift-requests/{reference}/decision`. They use the fields and privacy rules documented in `api.md`, with bearer authentication instead of browser session/CSRF/nonces. Approval still requires the caregiver's current password and explicit confirmation. Native scheduling screens are not yet implemented.
+
 ## Deployment isolation
 
 The local setup runs two independent loopback-bound Apache processes with a generated localhost TLS certificate. It forwards bearer headers, excludes query strings and headers from access logs, disables API debug output, uses a separate API environment/writable directory and denies browser/static routes on the API host. Browser hosts deny mobile routes including front-controller aliases. The API environment receives only the existing restricted DML database account; migration/test credentials stay outside it. Local processes share the Windows user account, so this is a host/process boundary, not an OS sandbox.

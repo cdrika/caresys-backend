@@ -118,4 +118,24 @@ class ApiController extends BaseController
             return is_array($r)?['ref'=>$r['ref'],'version'=>$r['version'],'state'=>$r['state']??'recorded']:['state'=>'recorded'];
         });
     }
+
+    public function shiftAvailability(string $agency)
+    {
+        return $this->runAction($agency,fn($w)=>(new \App\Services\ShiftPlanningService($w))->availability($this->input(['employment_ref','client_ref','starts_at','ends_at'])));
+    }
+
+    public function requestShiftChange(string $agency)
+    {
+        return $this->runAction($agency,function($w){$r=(new \App\Services\ShiftPlanningService($w))->request($this->input(['employment_ref','client_ref','starts_at','ends_at','service','required_qualification']));return ['ref'=>$r['ref'],'version'=>$r['version'],'state'=>$r['state'],'expires_at'=>$r['expires_at']];});
+    }
+
+    public function shiftRequests()
+    {
+        return $this->runAction(null,fn($w)=>(new \App\Services\ShiftPlanningService($w))->requests());
+    }
+
+    public function decideShiftChange(string $ref)
+    {
+        return $this->runAction(null,function($w)use($ref){$d=$this->input(['version','decision','confirm','password']);$d['ref']=$ref;$r=(new \App\Services\ShiftPlanningService($w))->decide($d);return ['ref'=>$ref,'version'=>$r['version'],'state'=>$r['state'],'visit_ref'=>$r['visit_ref']??null];});
+    }
 }
