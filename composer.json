@@ -13,6 +13,7 @@
         "php": "^8.2",
         "codeigniter4/framework": "^4.7",
         "codeigniter4/shield": "^1.4",
+        "commerceguys/addressing": "^2.3",
         "giggsey/libphonenumber-for-php-lite": "^9.0"
     },
     "require-dev": {

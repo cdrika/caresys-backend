@@ -6,3 +6,5 @@
 .subscription-quote .quote-module-options{display:block}.quote-module-row{display:grid;grid-template-columns:minmax(220px,.85fr) minmax(0,1.6fr);gap:16px 30px;align-items:center;padding:16px;border:1px solid #e3eae5;border-radius:7px;margin-top:10px}.quote-module-choice{display:flex;align-items:flex-start;gap:10px;font-weight:600;line-height:1.6;cursor:pointer}.quote-module-choice input{width:auto;flex:0 0 auto;margin-top:4px;accent-color:#137f73}.quote-module-description{margin:0;font-size:13px;line-height:1.8;color:#5b706a}@media(max-width:700px){.quote-module-row{grid-template-columns:1fr;gap:6px;padding:14px}.quote-module-description{padding-left:26px;font-size:12px}}
 
 .required-mark{color:#b42318;font-weight:700}
+
+.agency-address-section{grid-column:1/-1}.agency-address-section fieldset{margin-top:16px;padding:18px;border:1px solid var(--line);border-radius:10px}[data-address-field][hidden],[data-agency-address][hidden]{display:none!important}

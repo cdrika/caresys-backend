@@ -27,7 +27,7 @@ final class AgencyContact
     }
     public static function snapshot(array $agency): array
     {
-        $result=[];foreach(array_merge(['ref','name','country'],self::FIELDS) as $key)$result[$key]=(string)($agency[$key]??'');return $result;
+        $result=[];foreach(array_merge(['ref','name','country'],array_merge(self::FIELDS,AgencyAddress::FIELDS)) as $key)$result[$key]=(string)($agency[$key]??'');return $result;
     }
     public static function display(string $value): string
     {

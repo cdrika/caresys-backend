@@ -40,4 +40,5 @@ if(!in_array($action,['profile','career','contract'],true))unset($labels['role']
 <?php else: ?><input id="<?= $id ?>" name="<?= esc($key,'attr') ?>" type="<?= esc($type,'attr') ?>" value="<?= esc($type==='password'?'':$value,'attr') ?>"<?= $type==='password'?' autocomplete="current-password"':'' ?><?= !in_array($type,['password','date','datetime-local','number'],true)?' placeholder="'.esc($example,'attr').'"':'' ?><?= $required ?>><?php endif ?>
 </div>
 <?php endforeach ?>
+<?php if($action==='agency')echo view('components/agency_address',['safe'=>$safe]); ?>
 <div class="buttons"><button type="submit"><?= esc($button) ?></button></div></form>

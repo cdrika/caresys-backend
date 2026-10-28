@@ -60,6 +60,7 @@ final class SubscriptionInvoicePdf
         $this->number=$invoice['invoice_no'];$this->page();
         $this->text('PREPARED FOR',42,$this->y,9,true,'0.35 0.43 0.46');$this->y-=22;
         $this->paragraph($s['agency']['name'],14,true,56);
+        foreach(AgencyAddress::lines($s['agency']) as $line)$this->paragraph($line,9);
         $this->paragraph('Country: '.$s['agency']['country']);
         foreach(['official_email'=>'Official email','business_phone'=>'Phone','contact_number'=>'Contact','mobile_number'=>'Mobile','business_registration_number'=>'Business registration'] as $key=>$label){
             $value=$s['agency'][$key]??'';if($value==='')continue;

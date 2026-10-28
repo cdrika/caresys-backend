@@ -3,6 +3,11 @@ namespace App\Controllers;
 use App\Libraries\GeographyCatalog;
 class ReferenceController extends BaseController
 {
+    public function addressFormat()
+    {
+        try{$country=$this->request->getGet('country');if(!is_string($country))throw new \App\Services\DomainError('Choose a country.');return $this->response->setHeader('Cache-Control','private, max-age=3600')->setJSON(\App\Libraries\AgencyAddress::schema($country));}
+        catch(\App\Services\DomainError $e){return $this->response->setStatusCode(422)->setJSON(['error'=>$e->getMessage()]);}
+    }
     public function locations()
     {
         $d=$this->request->getGet();$level=$d['level']??'countries';

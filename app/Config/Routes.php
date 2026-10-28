@@ -8,6 +8,7 @@ $routes->get('/', static fn() => redirect()->to('/app'));
 $routes->post('billing/stripe/webhook','StripeWebhookController::receive');
 $routes->group('', ['filter'=>'session'], static function($routes) {
     $routes->get('reference/locations','ReferenceController::locations');
+    $routes->get('reference/address-format','ReferenceController::addressFormat');
     $routes->get('app','WorkspaceController::personal');
     $routes->get('app/billing-policy','BillingPolicyController::index');
     $routes->post('app/billing-policy','BillingPolicyController::save');

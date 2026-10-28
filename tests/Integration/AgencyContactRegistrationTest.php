@@ -17,12 +17,12 @@ final class AgencyContactRegistrationTest extends CIUnitTestCase
     public function testRegistrationPersistsNormalizedContactsAndInvoiceKeepsItsSnapshot(): void
     {
         $user=$this->database->table('users')->where('username','candidate')->get()->getRow();$w=new Workspace((int)$user->id,null,$this->database);
-        $agency=(new AdministrationService($w))->agency($this->details());$this->assertSame('+12025550123',$agency['business_phone']);$this->assertSame('office@example.invalid',$agency['official_email']);
+        $agency=(new AdministrationService($w))->agency($this->details()+['include_address'=>'yes','address_line1'=>'100 Example Street','address_city'=>'Sacramento','address_state'=>'CA','address_postal_code'=>'95814']);$this->assertSame('+12025550123',$agency['business_phone']);$this->assertSame('office@example.invalid',$agency['official_email']);
         $this->assertSame('owner',$this->database->table('cs_memberships')->where('agency_id',$agency['id'])->get()->getRow()->role);
         // Isolated fake card verification only, to issue a trial proposal without Stripe.
         $this->database->table('cs_agency_subscriptions')->where('agency_id',$agency['id'])->update(['card_verified_at'=>gmdate('Y-m-d H:i:s')]);
         $owner=new Workspace((int)$user->id,$agency['ref'],$this->database,true);$invoice=(new SubscriptionBillingService($owner))->issue(['modules'=>['people'],'service_level'=>'custom','worker_count'=>10,'request_key'=>bin2hex(random_bytes(16))]);
-        $saved=json_decode($invoice['snapshot'],true);$this->assertSame('BR-TEST-100',$saved['agency']['business_registration_number']);
+        $saved=json_decode($invoice['snapshot'],true);$this->assertSame('100 Example Street',$saved['agency']['address_line1']);$this->assertSame('1',$saved['agency']['address_enabled']);$this->assertSame('BR-TEST-100',$saved['agency']['business_registration_number']);
         $this->database->table('cs_agencies')->where('id',$agency['id'])->update(['official_email'=>'changed@example.invalid']);
         $pdf=SubscriptionInvoicePdf::render($invoice);$this->assertStringContainsString('office@example.invalid',$pdf);$this->assertStringContainsString('BR-TEST-100',$pdf);$this->assertStringNotContainsString('changed@example.invalid',$pdf);
     }

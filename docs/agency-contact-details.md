@@ -8,4 +8,10 @@ New subscription invoice PDFs include official email, internationally formatted 
 
 The additive AgencyContactDetails migration retains existing agencies with empty defaults. Required contact validation applies to new registrations. The current release does not add an agency contact editing workflow.
 
-Validation: 69 backend tests and 311 assertions passed, including registration rollback, optional registration number, required contacts, country-specific phone parsing, mobile validation and invoice snapshot stability. Browser checks cover required markers, UK and Australia phone hints and desktop/mobile layouts without registering a fictional agency. Both pages of a fictional invoice preview were visually checked.
+Validation: 74 backend tests and 336 assertions passed, including registration rollback, optional registration number, required contacts, country-specific phone parsing, mobile validation and invoice snapshot stability, address opt-in/out, conditional address validation and country-specific postal formats. Browser checks cover required markers, UK and Australia phone hints, US/Canada/UAE address fields, and desktop/mobile layouts without registering a fictional agency. Both pages of a fictional invoice preview were visually checked.
+
+## Optional address
+
+The agency can opt in with Enter agency address. Address fields stay hidden and disabled while opted out, and the server ignores submitted address values unless include_address=yes. Address line 1 is required only after opting in; line 2 is optional. City/locality, state/province/county and postal/ZIP requirements follow the selected country metadata. Known states and provinces are selected from a list. Countries without postal codes do not display or store a postal code. Country changes clear incompatible state choices.
+
+Addresses are formatted in country order and captured in new invoice and offer snapshots. Existing issued documents remain unchanged. Postal validation checks country format, not deliverability or geocoded address accuracy. The address is not requested or required to register without opting in.
