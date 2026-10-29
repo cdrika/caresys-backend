@@ -11,9 +11,10 @@ class BillingController extends BaseController
             $scope=$agencyRef;
             if(session('workspace_scope')!==$scope)session()->set(['workspace_scope'=>$scope,'workspace_nonce'=>bin2hex(random_bytes(24))]);
             $agency=$w->agency;$base='/agency/'.$agencyRef;$nonce=session('workspace_nonce');
+            $memberships=$w->db->table('cs_memberships m')->select('a.ref,a.name,m.role')->join('cs_agencies a','a.id=m.agency_id')->where(['m.user_id'=>$w->userId,'m.state'=>'active'])->get()->getResultArray();
             $subscription_invoices=$status['invoices']??[];
             $active_worker_count=$status['owner']?(int)$w->table('employments')->select('COUNT(DISTINCT person_id) AS total',false)->where('state','active')->get()->getRow()->total:0;
-            return $this->response->setHeader('Cache-Control','no-store, private')->setBody(view('caresys/billing',compact('w','status','agency','base','nonce','subscription_invoices','active_worker_count')));
+            return $this->response->setHeader('Cache-Control','no-store, private')->setBody(view('caresys/billing',compact('w','status','agency','base','nonce','subscription_invoices','active_worker_count','memberships')));
         }catch(DomainError $e){return $this->response->setStatusCode($e->status)->setHeader('Cache-Control','no-store')->setBody(view('caresys/error',['message'=>$e->getMessage(),'status'=>$e->status]));}
     }
 
