@@ -5,7 +5,8 @@ $saved=(array)session('safe_input');
 $retry=($saved['return_page']??'')==='settings' && array_key_exists('service_level',$saved);
 $selected=$retry?($saved['modules']??[]):(json_decode($agency['modules']??'[]',true)??[]);
 if(!is_array($selected))$selected=[];
-$level=$retry && is_string($saved['service_level']??null)?$saved['service_level']:'custom';
+$level=$retry && is_string($saved['service_level']??null)?$saved['service_level']:'starter';
+if(!$retry)$selected=array_values(array_unique(array_merge(SubscriptionPricing::STARTER,$selected)));
 ?>
 <form method="post" action="<?= esc($billing_action??$base.'/actions/subscription_request','attr') ?>" data-workflow data-inline-help data-form-action="subscription_request" class="form-grid subscription-quote">
 <?= csrf_field() ?>
