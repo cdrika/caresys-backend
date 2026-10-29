@@ -16,13 +16,24 @@
         output.textContent=`Estimated monthly subtotal: USD ${(best.total/100).toFixed(2)} — ${best.label}, including required add-ons and worker coverage. Tax requires confirmation.`;
     };
     const packageSelect=form.elements.service_level;
-    packageSelect.addEventListener('change',()=>{
+    const applyPackage=()=>{
         const key=packageSelect.value;
         // Custom keeps the current selection so the customer can tailor a package.
         if(key!=='custom' && catalog.packages[key]){
             const included=new Set(catalog.packages[key].modules);
-            form.querySelectorAll('input[name="modules[]"]').forEach(input=>{input.checked=included.has(input.value);});
+            const boxes=[...form.querySelectorAll('input[name="modules[]"]')];
+            boxes.forEach(input=>{input.checked=included.has(input.value);});
+            // Notify the module validator after programmatic checkbox changes.
+            boxes[0]?.dispatchEvent(new Event('change',{bubbles:true}));
         }
-    });
-    form.addEventListener('change',update);update();
+        update();
+    };
+    packageSelect.addEventListener('input',applyPackage);
+    packageSelect.addEventListener('change',applyPackage);
+    const restorePackage=()=>{
+        if(!form.querySelector('input[name="modules[]"]:checked'))applyPackage();
+        else update();
+    };
+    window.addEventListener('pageshow',restorePackage);
+    form.addEventListener('change',update);restorePackage();
 })();

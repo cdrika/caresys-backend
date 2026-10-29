@@ -20,7 +20,7 @@ $level=$retry && is_string($saved['service_level']??null)?$saved['service_level'
 <p class="sub wide">A monthly pro forma invoice is issued immediately. We compare custom pricing and packages with add-ons, include required dependencies, and choose the lowest total. Your package preference breaks ties. Custom starts at USD 29/month with 10 workers; additional workers cost USD 3/month each. Tax and payment terms require confirmation. For verified-card trials, selected package modules become available during the free period. Paid activation after expiry requires owner-approved payment.</p>
 <p class="wide" id="subscription-estimate" role="status" aria-live="polite"></p>
 <script type="application/json" id="subscription-price-catalog"><?= json_encode(SubscriptionPricing::catalog(),JSON_HEX_TAG|JSON_HEX_AMP|JSON_HEX_APOS|JSON_HEX_QUOT) ?></script>
-<script src="/assets/subscription-pricing.js" defer></script>
+<script src="/assets/subscription-pricing.js?v=<?= (int)filemtime(FCPATH.'assets/subscription-pricing.js') ?>" defer></script>
 <div class="wide"><button type="submit">Request subscription quote</button></div>
 </form>
 <?php if(!empty($subscription_invoices)): ?>
