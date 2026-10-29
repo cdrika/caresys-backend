@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "checks": [
+    "New account accepts trimmed username and normalized email",
+    "Existing email rejects duplicate registration",
+    "Existing username rejects case variant registration"
+  ],
+  "credentials_included": false
+}

@@ -54,7 +54,9 @@ $routes->group('', ['filter'=>'session'], static function($routes) {
     $routes->post('api/v1/agencies/(:segment)/invoices/(:segment)/credit','ApiController::operation/$1/credit/$2');
 });
 
-service('auth')->routes($routes, ['except'=>['logout']]);
+$routes->get('register','RegisterController::registerView',['as'=>'register']);
+$routes->post('register','RegisterController::registerAction');
+service('auth')->routes($routes, ['except'=>['logout','register']]);
 $routes->post('logout','\CodeIgniter\Shield\Controllers\LoginController::logoutAction',['filter'=>'session']);
 
 $routes->post('mobile/v1/pairing/requests','MobilePairingController::start',['filter'=>'mobilePairing']);

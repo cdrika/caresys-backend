@@ -1,0 +1,12 @@
+const fs=require('node:fs'),crypto=require('node:crypto'),assert=require('node:assert/strict');
+const {chromium}=require(process.env.CARESYS_NODE_MODULES+'/playwright');
+const stamp=Date.now(),fixture={username:'qa.reg.'+stamp,email:'qa.reg.'+stamp+'@example.invalid',password:'CareQa!'+crypto.randomBytes(16).toString('hex')};
+const manifest='build/qa/identity-policy-session.local.json';if(fs.existsSync(manifest))throw Error('Clean the previous identity fixture first.');fs.writeFileSync(manifest,JSON.stringify(fixture));
+(async()=>{const browser=await chromium.launch({headless:true,channel:'msedge',args:['--no-proxy-server']});try{
+const owner=await (await browser.newContext({ignoreHTTPSErrors:true})).newPage();
+async function signup(p,username,email){await p.goto('https://localhost:8444/register');await p.locator('[name=username]').fill(username);await p.locator('[name=email]').fill(email);await p.locator('[name=password]').fill(fixture.password);await p.locator('[name=password_confirm]').fill(fixture.password);await p.getByRole('button',{name:'Create personal account',exact:true}).click();await p.waitForLoadState('networkidle');}
+await signup(owner,'  '+fixture.username+'  ',fixture.email.toUpperCase());assert.match(owner.url(),/\/app$/);
+const guest=await (await browser.newContext({ignoreHTTPSErrors:true})).newPage();await signup(guest,'other.'+stamp,fixture.email);assert.match(guest.url(),/\/register$/);assert.match(await guest.locator('body').innerText(),/This email is already registered/);
+await signup(guest,fixture.username.toUpperCase(),'other.'+stamp+'@example.invalid');assert.match(guest.url(),/\/register$/);assert.match(await guest.locator('body').innerText(),/This account name is already registered/);
+fs.mkdirSync('Documentation/Test/Account Identity',{recursive:true});await guest.screenshot({path:'Documentation/Test/Account Identity/duplicate-username.png',fullPage:true});fs.writeFileSync('Documentation/Test/Account Identity/browser-results.json',JSON.stringify({passed:true,checks:['New account accepts trimmed username and normalized email','Existing email rejects duplicate registration','Existing username rejects case variant registration'],credentials_included:false},null,2));console.log('PASS: normalized registration, duplicate email rejection and case-insensitive duplicate username rejection.');
+}finally{await browser.close();}})().catch(e=>{console.error(e.message);process.exit(1)});

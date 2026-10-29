@@ -17,7 +17,8 @@ final class AgencyContact
     }
     public static function validate(array $d,string $country): array
     {
-        $email=Workspace::text($d,'official_email',254);
+        // Correspondence contacts may be shared by branches and colleagues; they are not login identities.
+        $email=strtolower(Workspace::text($d,'official_email',254));
         if(!filter_var($email,FILTER_VALIDATE_EMAIL))throw new DomainError('Enter a valid official agency email address.');
         $business=($d['include_business_phone']??'')==='yes';
         $sameMobile=$business&&($d['business_is_mobile']??'')==='yes';

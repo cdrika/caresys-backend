@@ -1,0 +1,7 @@
+{
+    "fixture_account_removed": true,
+    "fixture_agency_removed": false,
+    "fixture_notifications_removed": true,
+    "other_accounts_preserved": true,
+    "stripe_unchanged": true
+}
