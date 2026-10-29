@@ -15,5 +15,14 @@
         const best=candidates[0];
         output.textContent=`Estimated monthly subtotal: USD ${(best.total/100).toFixed(2)} — ${best.label}, including required add-ons and worker coverage. Tax requires confirmation.`;
     };
+    const packageSelect=form.elements.service_level;
+    packageSelect.addEventListener('change',()=>{
+        const key=packageSelect.value;
+        // Custom keeps the current selection so the customer can tailor a package.
+        if(key!=='custom' && catalog.packages[key]){
+            const included=new Set(catalog.packages[key].modules);
+            form.querySelectorAll('input[name="modules[]"]').forEach(input=>{input.checked=included.has(input.value);});
+        }
+    });
     form.addEventListener('change',update);update();
 })();
