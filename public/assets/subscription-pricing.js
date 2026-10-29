@@ -21,6 +21,7 @@
         // Custom keeps the current selection so the customer can tailor a package.
         if(key!=='custom' && catalog.packages[key]){
             const included=new Set(catalog.packages[key].modules);
+            form.elements.worker_count.value=String(Math.max(catalog.packages[key].included_workers,Number(form.elements.worker_count.dataset.activeWorkers)||0));
             const boxes=[...form.querySelectorAll('input[name="modules[]"]')];
             boxes.forEach(input=>{input.checked=included.has(input.value);});
             // Notify the module validator after programmatic checkbox changes.
