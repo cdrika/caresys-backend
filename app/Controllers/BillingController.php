@@ -13,8 +13,10 @@ class BillingController extends BaseController
             $agency=$w->agency;$base='/agency/'.$agencyRef;$nonce=session('workspace_nonce');
             $memberships=$w->db->table('cs_memberships m')->select('a.ref,a.name,m.role')->join('cs_agencies a','a.id=m.agency_id')->where(['m.user_id'=>$w->userId,'m.state'=>'active'])->get()->getResultArray();
             $subscription_invoices=$status['invoices']??[];
+            $checkout=null;$checkoutKey=$this->request->getGet('checkout_key');
+            if($status['owner'] && is_string($checkoutKey) && preg_match('/^[a-f0-9]{32}$/D',$checkoutKey))$checkout=$w->table('billing_checkouts')->where('request_key',$checkoutKey)->where('state','pending')->get()->getRowArray();
             $active_worker_count=$status['owner']?(int)$w->table('employments')->select('COUNT(DISTINCT person_id) AS total',false)->where('state','active')->get()->getRow()->total:0;
-            return $this->response->setHeader('Cache-Control','no-store, private')->setBody(view('caresys/billing',compact('w','status','agency','base','nonce','subscription_invoices','active_worker_count','memberships')));
+            return $this->response->setHeader('Cache-Control','no-store, private')->setBody(view('caresys/billing',compact('w','status','agency','base','nonce','subscription_invoices','active_worker_count','memberships','checkout')));
         }catch(DomainError $e){return $this->response->setStatusCode($e->status)->setHeader('Cache-Control','no-store')->setBody(view('caresys/error',['message'=>$e->getMessage(),'status'=>$e->status]));}
     }
 

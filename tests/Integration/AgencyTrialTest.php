@@ -144,4 +144,21 @@ final class AgencyTrialTest extends CIUnitTestCase
             $this->assertSame($before,(new AgencyAccessService($this->w))->status());
         }finally{$config->localSimulator=$old;}
     }
+
+    public function testBillingLayoutHasOneCheckoutReturnActionAndClearStages(): void
+    {
+        $dir=ROOTPATH.'build/qa/billing-layout';if(!is_dir($dir))mkdir($dir,0777,true);
+        $base='/agency/'.$this->w->agency['ref'];
+        foreach(['returned','setup','modules','trial'] as $scene){
+            $status=['owner'=>true,'locked'=>$scene!=='trial','state'=>$scene==='trial'?'trial':'awaiting_card','trial_days'=>30,'card_verified'=>in_array($scene,['modules','trial'],true),'stripe_configured'=>true,'card_brand'=>'visa','card_last4'=>'4242'];
+            $html=view('caresys/billing',['w'=>$this->w,'status'=>$status,'agency'=>$this->w->agency,'base'=>$base,'nonce'=>'test-nonce','subscription_invoices'=>[],'active_worker_count'=>10,'memberships'=>[['ref'=>$this->w->agency['ref'],'name'=>$this->w->agency['name']]],'checkout'=>$scene==='returned'?['ref'=>str_repeat('a',32),'purpose'=>'setup']:null]);
+            $this->assertStringContainsString('Agency setup progress',$html);
+            $this->assertStringContainsString('class="sidebar"',$html);
+            if($scene==='returned'){$this->assertStringContainsString('Confirm saved card',$html);$this->assertStringNotContainsString('Continue to secure card setup',$html);$this->assertStringNotContainsString('Request subscription quote',$html);}
+            if($scene==='setup')$this->assertStringContainsString('Continue to secure card setup',$html);
+            if($scene==='modules')$this->assertStringContainsString('Step 2 &middot; Choose your package and modules',$html);
+            if($scene==='trial'){$this->assertStringContainsString('Open agency workspace',$html);$this->assertStringContainsString('details class="billing-edit"',$html);}
+            file_put_contents($dir.'/'.$scene.'.html',$html);
+        }
+    }
 }
