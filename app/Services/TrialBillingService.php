@@ -62,11 +62,14 @@ final class TrialBillingService
             $ref=bin2hex(random_bytes(16));
             $base=rtrim(config('Billing')->webBaseURL,'/').'/agency/'.$this->w->agency['ref'].'/billing';
             if(!str_starts_with($base,'https://'))throw new DomainError('Billing requires an HTTPS return URL.',503);
-            $payload=['mode'=>$purpose,'customer'=>$row['stripe_customer'],'payment_method_types'=>['card'],
+            // Use standard Checkout for card setup and explicitly owner-approved payments.
+            $payload=['managed_payments'=>['enabled'=>'false'],'mode'=>$purpose,'customer'=>$row['stripe_customer'],'payment_method_types'=>['card'],
                 'client_reference_id'=>$ref,'metadata'=>['agency_ref'=>$this->w->agency['ref'],'checkout_ref'=>$ref],
                 'success_url'=>$base.'?checkout='.$ref,'cancel_url'=>$base,
                 'custom_text'=>['submit'=>['message'=>$purpose==='setup'?'Save your card only. No subscription charge during the free trial. Payment requires owner approval after the trial.':'Approve this payment for 30 days of agency access. No automatic renewal.']]];
-            if($purpose==='setup'){$payload['currency']='usd';}
+            if($purpose==='setup'){
+                $payload['currency']='usd';
+            }
             else{
                 $payload['line_items']=[['price_data'=>['currency'=>'usd','unit_amount'=>(int)$invoice['total_cents'],'product_data'=>['name'=>'CareSys - '.$invoice['invoice_no'].' - 30 days agency access']],'quantity'=>1]];
                 $payload['automatic_tax']=['enabled'=>config('Billing')->automaticTax?'true':'false'];

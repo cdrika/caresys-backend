@@ -72,6 +72,10 @@ final class AgencyTrialTest extends CIUnitTestCase
         $this->invoice();$this->assertSame($status['trial_ends_at'],$access->status()['trial_ends_at']);
         $this->denied(fn()=>(new TrialBillingService($this->w,$this->stripe))->begin('payment',['request_key'=>bin2hex(random_bytes(16)),'confirm'=>'yes','invoice_ref'=>$invoice['ref']]),409);
         $this->assertCount(1,$this->stripe->sessions); // Setup only; no payment created during free period.
+        $setupCalls=array_values(array_filter($this->stripe->calls,static fn($call)=>$call[1]==='checkout/sessions'));
+        $this->assertSame('setup',$setupCalls[0][2]['mode']);
+        $this->assertSame(['enabled'=>'false'],$setupCalls[0][2]['managed_payments']);
+        $this->assertArrayNotHasKey('line_items',$setupCalls[0][2]);
     }
     public function testVerifiedPaymentUnlocksOnceAndRenewalNeedsAnotherApproval(): void
     {
